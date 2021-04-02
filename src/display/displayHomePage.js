@@ -4,7 +4,7 @@ const Display = (function() {
     
   }
   
-  return {}
+  return { getHomePage }
 })()
 
 const getHomePage = Display.getHomePage;
