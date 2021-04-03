@@ -15,4 +15,6 @@ const taskInterface = (function() {
     EventAggregator.priority('taskFromForm', newTask);
   });
 
-})()
+})();
+
+export { taskInterface }
