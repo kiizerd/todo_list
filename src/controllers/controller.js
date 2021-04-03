@@ -9,4 +9,5 @@ const Controller = (function() {
     project: projectController,
     task: taskController
   }
-})()
+
+})();
