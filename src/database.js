@@ -5,31 +5,26 @@ const Database = (function() {
   
   function addProject(project) {
     projects[project.title] = project;
+    console.log('projects: ', projects);
   };
     
   EventAggregator.subscribe('projectCreated', projectObj => {
     addProject(projectObj);
   });
 
-  function filterProjects(options) {
-    this.select()
+  function filterProjects(options, ary) {
+    
   }
 
-  function sortProjects(options) {
-    this.sort((p1, p2) => {
-      if (p1.priority > p2.priority) return 1
-      if (p1.priority < p2.priority) return -1
-      if (p1.priority === p2.priority) {
-        // sort by date due
-      };
-    });
+  function sortProjects(options, ary) {
+    
   };
 
   EventAggregator.subscribe('requestProjects', options => {
     let requestedProjects = Object.values(projects);
-    if (options.filter) filterProjects(options.filter).bind(requestedProjects);
-    if (options.sort) sortProjects(options.sort).bind(requestedProjects);
-    EventAggregator.publish('projectsReceipt', sortedProjects);
+    if (options.filter) filterProjects(options.filter, requestedProjects);
+    if (options.sort) sortProjects(options.sort, requestedProjects);
+    EventAggregator.publish('projectsReceipt', requestedProjects);
   });
 
 

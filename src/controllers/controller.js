@@ -2,8 +2,8 @@ import { ProjectController } from './projectController'
 
 const Controller = (function() {
   
-  const projectController = ProjectController
-  const taskController
+  const projectController = ProjectController;
+  const taskController = '';
 
   return {
     project: projectController,
@@ -11,3 +11,5 @@ const Controller = (function() {
   }
 
 })();
+
+export { Controller }

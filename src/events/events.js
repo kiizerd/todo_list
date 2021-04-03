@@ -29,16 +29,28 @@ const EventAggregator = (function() {
     for (let i = 0; i < events.length; i++) {
       if (events[i].name === eventName) return events[i]
     }
-    console.log('event not found')
-    return new Event(eventName);
   };
 
   function publish(eventName, eventArgs) {
-    getEvent(eventName).fire(eventArgs);
+    let event = getEvent(eventName);
+    
+    if (!event) {
+      event = new Event(eventName);
+      events.push(event);
+    }
+
+    event.fire(eventArgs);
   };
 
   function subscribe(eventName, handler) {
-    getEvent(eventName).addHandler(handler);
+    let event = getEvent(eventName);
+
+    if (!event) {
+      event = new Event(eventName);
+      events.push(event);
+    }
+
+    event.addHandler(handler);
   };
 
   return { publish, subscribe };

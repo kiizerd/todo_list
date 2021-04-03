@@ -54,6 +54,7 @@ const Display = (function() {
 
       return card
     }
+    console.log('projects', projectList)
 
     return cardList
   }

@@ -15,35 +15,35 @@ const ProjectController = (function() {
 
 
   EventAggregator.subscribe('createProject', formData => {
-    EventAggregator.publish('formToProject', formData)
+    EventAggregator.publish('formToProject', formData);
+  });
 
-    let newProject
-    EventAggregator.subscribe('projectFromForm', projectObj => {
-      newProject = projectObj;
-    })
-    
+  
+  EventAggregator.subscribe('projectFromForm', projectObj => {
+    let newProject = projectObj;
     EventAggregator.publish('projectCreated', newProject);
   });
+    
 
 
   let primedProject;
   EventAggregator.subscribe('primeProject', projectName => {
-    primedProject = findProject(projectName)
+    primedProject = findProject(projectName);
   });
 
 
   EventAggregator.subscribe('createTask', formData => {
     EventAggregator.publish('formToTask', formData);
+  });
 
-    let newTask;
-    EventAggregator.subscribe('taskFromForm', taskObj => {
-      newTask = taskObj
-    });
-
+  let newTask;
+  EventAggregator.subscribe('taskFromForm', taskObj => {
+    newTask = taskObj;
     primedProject.addTask(newTask);
     EventAggregator.publish('taskCreated', [newTask, primedProject.title]);
-
   });
+
+
 
   
 })()
