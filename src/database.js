@@ -11,15 +11,12 @@ const Database = (function() {
     addProject(projectObj);
   });
 
-  
-  function sortProjects(options) {
-    let result
-    if (options.filter) filterProjects(options.filter)
-    if (options.sort) {
+  function filterProjects(options) {
+    this.select()
+  }
 
-    }
-    
-    Object.values(projects).sort((p1, p2) => {
+  function sortProjects(options) {
+    this.sort((p1, p2) => {
       if (p1.priority > p2.priority) return 1
       if (p1.priority < p2.priority) return -1
       if (p1.priority === p2.priority) {
