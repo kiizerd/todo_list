@@ -1,28 +1,53 @@
-import { eventAggregator } from './events/events'
-import { compareAsc } from 'date-fns'
+import { EventAggregator } from './events/events'
 
 const Database = (function() {
   const projects = {}
   
   function addProject(project) {
-    projects[project.title] = project
-  }
-  
-  eventAggregator.subscribe('projectCreated', projectObj => {
+    projects[project.title] = project;
+  };
+    
+  EventAggregator.subscribe('projectCreated', projectObj => {
     addProject(projectObj);
   });
+
   
-  eventAggregator.subscribe('requestProjects', options => {
-    let sortedProjects = Object.values(projects).sort((p1, p2) => {
+  function sortProjects(options) {
+    let result
+    if (options.filter) filterProjects(options.filter)
+    if (options.sort) {
+
+    }
+    
+    Object.values(projects).sort((p1, p2) => {
       if (p1.priority > p2.priority) return 1
       if (p1.priority < p2.priority) return -1
       if (p1.priority === p2.priority) {
         // sort by date due
-      }
-      eventAggregator.publish('projectsReceipt', sortedProjects);
+      };
     });
+  };
+
+  EventAggregator.subscribe('requestProjects', options => {
+    let requestedProjects = Object.values(projects);
+    if (options.filter) filterProjects(options.filter).bind(requestedProjects);
+    if (options.sort) sortProjects(options.sort).bind(requestedProjects);
+    EventAggregator.publish('projectsReceipt', sortedProjects);
   });
 
+
+  function editProject(project, updatedProps) {
+    for (const prop in project) {
+      if (Object.keys(updatedProps).includes(prop)) {
+        project[prop] = updatedProps[prop];
+      };
+    };
+  };
+
+  function deleteProject(projectName) {
+    delete projects[projectName];
+  };
+  
   return {}
 })()
 

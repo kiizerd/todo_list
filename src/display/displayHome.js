@@ -1,5 +1,5 @@
 import { Generator } from '../generator';
-import { eventAggregator } from '../events/events';
+import { EventAggregator } from '../events/events';
 const Isotope = require('isotope-layout');
 
 const Display = (function() {
@@ -30,12 +30,12 @@ const Display = (function() {
     const projectList = [];
     const cardList = [];
     
-    eventAggregator.publish('requestProjects', options ? options : {
+    EventAggregator.publish('requestProjects', options ? options : {
       sort: 'default',
       filter: 'default'
     });
     
-    eventAggregator.subscribe('projectsReceipt', projects => {
+    EventAggregator.subscribe('projectsReceipt', projects => {
       // reset local list to guarantee most up to date information
       projectList.length = 0;
 

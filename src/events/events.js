@@ -22,7 +22,7 @@ Event.prototype.fire = function(eventArgs) {
   });
 };
 
-const eventAggregator = (function() {
+const EventAggregator = (function() {
   const events = [];
 
   function getEvent(eventName) {
@@ -44,4 +44,4 @@ const eventAggregator = (function() {
   return { publish, subscribe };
 })();
 
-export { eventAggregator }
+export { EventAggregator }
