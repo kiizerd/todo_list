@@ -5,7 +5,7 @@ const Database = (function() {
   
   function addProject(project) {
     projects[project.title] = project;
-    console.log('projects: ', projects);
+    console.log('project added', project);
   };
     
   EventAggregator.subscribe('projectCreated', projectObj => {
