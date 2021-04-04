@@ -7,14 +7,14 @@ const Generator = (function() {
     card.header = getCardHeader()
     card.body = getCardBody()
 
-    getCardHeader = () => {
+    function getCardHeader() {
       const header = document.createElement('h5');
       header.classList.add('card-header')
 
       return header
     }
 
-    getCardBody = () => {
+    function getCardBody() {
       const body = document.createElement('div');
       body.classList.add('card-body');
 
