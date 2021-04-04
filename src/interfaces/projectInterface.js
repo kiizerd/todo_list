@@ -7,8 +7,10 @@ const projectInterface = (function() {
     this.title = formData.title;
     this.description = formData.description;
     this.priority = formData.priority;
-    this.dueDate = formData.dueDate;
-    this.dateCreated = format(new Date(), 'yyyy-MM-dd');
+    this.dates = {
+      due: format(formData.dueDate, 'PP'),
+      started: format(new Date(), 'PP')
+    }
     this.tasks = [];
   };
 
