@@ -26,7 +26,113 @@ const Generator = (function() {
     return card
   }
 
-  return { createCard }
+  function createModal() {
+    const modal = document.createElement('div');
+    modal.classList.add('modal');
+    modal.tabIndex = '-1';
+
+    const modalDialog = getModalDialog()
+
+    function getModalDialog() {
+      const dialog = document.createElement('div');
+      dialog.classList.add('modal-dialog');
+
+      const content = getModalContent()
+
+      dialog.append(content);
+
+      return dialog;
+    }
+
+    function getModalContent() {
+      const content = document.createElement('div');
+      content.classList.add('modal-content');
+
+      const header = getModalHeader();
+
+      function getModalHeader() {
+        const header = document.createElement('div');
+        header.classList.add('modal-header');
+
+        const title = getModalTitle();
+
+        function getModalTitle() {
+          const h = document.createElement('h5');
+          h.classList.add('modal-title');
+          h.textContent = 'Modal Title';
+          
+          return h
+        }
+
+        const closeBtn = getCloseBtn();
+
+        function getCloseBtn() {
+          const btn = document.createElement('button');
+          btn.classList.add('btn-close');
+          btn.type = 'button';
+          btn.setAttribute('data-bs-dismiss', 'modal');
+          btn.setAttribute('aria-label', 'Close');
+
+          return btn
+        }
+        
+        header.append(title, closeBtn);
+
+        return header
+      }
+      
+      const body = getModalBody();
+
+      function getModalBody() {
+        const body = document.createElement('div');
+        body.classList.add('modal-body');
+
+        return body
+      }
+
+      const footer = getModalFooter();
+
+      function getModalFooter() {
+        const footer = document.createElement('div');
+        div.classList.add('modal-footer');
+        
+        const closeBtn = getFooterCloseBtn();
+
+        function getFooterCloseBtn() {
+          const btn = document.createElement('button');
+          btn.setAttribute('data-bs-dismiss', 'modal');
+          btn.classList.add('btn btn-secondary');
+          btn.textContent = 'Close'
+          
+          return btn
+        }
+
+        const successBtn = getSuccessBtn();
+
+        function getSuccessBtn() {
+          const btn = document.createElement('button');
+          btn.classList.add('btn', 'btn-success');
+          btn.textContent = 'Success!';
+
+          return btn
+        }
+
+        footer.append(closeBtn, successBtn);
+
+        return footer
+      }
+
+      content.append(header, body, footer);
+
+      return content
+    }
+
+    modal.append(modalDialog);
+
+    return modal
+  }
+
+  return { createCard, createModal }
 })();
 
 export { Generator }

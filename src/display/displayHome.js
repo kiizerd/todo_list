@@ -6,22 +6,25 @@ const Display = (function() {
 
   function getHomePage() {
     const div = getProjectsContainer();    
+
+    function getProjectsContainer() {
+      const div = document.createElement('div');
+      div.classList.add('container-fluid');
+      div.classList.add('row', 'row-cols-xs-2', 'row-cols-md-3');
+      div.id = 'projects-container';
+
+      return div
+    }
+
     const projectCards = getProjectCards()
 
     projectCards.forEach(card => {
       div.append(card);
     });
 
+    div.append(getAddProjectBtn());
+
     return div;
-  }
-
-  function getProjectsContainer() {
-    const div = document.createElement('div');
-    div.classList.add('container-fluid');
-    div.classList.add('row', 'row-cols-xs-2', 'row-cols-md-3');
-    div.id = 'projects-container';
-
-    return div
   }
 
   function getProjectCards(options) {
@@ -197,6 +200,15 @@ const Display = (function() {
     div.append(taskList, addTaskBtn);
 
     return div
+  }
+
+  function getAddProjectBtn() {
+    const btn = document.createElement('button');
+    btn.classList.add('btn', 'btn-dark', 'm-3', 'w-25');
+    btn.textContent = 'New Project';
+    btn.onclick = showNewProjectModal();
+
+    return btn
   }
   
   return { getHomePage }
