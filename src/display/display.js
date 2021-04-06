@@ -1,7 +1,9 @@
 import { getHeader } from './displayHeader';
 import { getHomePage } from './displayHome';
+import { Project } from './displayProject';
 
 const Display = (function() {
+  Project;
   const content = document.getElementById('content');
 
   function init() {
@@ -24,17 +26,21 @@ const Display = (function() {
       'history': getHistoryPage
     }
 
-    return !pages[name] ? getProjectPage.bind(name) : pages[name];
+    return !pages[name] ? selectProjectPage(name) : pages[name];
   }
 
-  function getProjectPage() {
-    console.log('GET - project: ' + this);
+  function selectProjectPage(projectName) {
+    Project.getProjectPage(projectName);
   }
 
   function getTaskCard(task) {}
 
   function getHistoryPage() {
     console.log('GET - History Page - 404 - Page not made lol')
+  }
+
+  function showNewProjectModal() {
+    console.log('fuckpo')
   }
 
   return { init }

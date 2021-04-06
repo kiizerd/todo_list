@@ -1,3 +1,5 @@
+import { Modal } from 'bootstrap';
+
 const Generator = (function() {
   
   function createCard() {
@@ -94,14 +96,14 @@ const Generator = (function() {
 
       function getModalFooter() {
         const footer = document.createElement('div');
-        div.classList.add('modal-footer');
+        footer.classList.add('modal-footer');
         
         const closeBtn = getFooterCloseBtn();
 
         function getFooterCloseBtn() {
           const btn = document.createElement('button');
           btn.setAttribute('data-bs-dismiss', 'modal');
-          btn.classList.add('btn btn-secondary');
+          btn.classList.add('btn', 'btn-secondary');
           btn.textContent = 'Close'
           
           return btn
@@ -127,9 +129,18 @@ const Generator = (function() {
       return content
     }
 
-    modal.append(modalDialog);
 
-    return modal
+    modal._isShown = false
+
+    modal.toggle = () => {
+      
+    }
+
+    modal.append(modalDialog);
+    
+    const modalObj = new Modal(modal, {});
+
+    return modalObj
   }
 
   return { createCard, createModal }

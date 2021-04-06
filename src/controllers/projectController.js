@@ -1,4 +1,4 @@
-import { EventAggregator } from '../events/events';
+import { EventAggregator } from '../events';
 
 const ProjectController = (function() {
 

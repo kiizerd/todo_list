@@ -1,4 +1,4 @@
-import { EventAggregator } from '../events/events'
+import { EventAggregator } from '../events'
 import { format } from 'date-fns'
 
 const projectInterface = (function() {

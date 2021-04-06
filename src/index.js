@@ -1,4 +1,4 @@
-import { EventAggregator } from './events/events';
+import { EventAggregator } from './events';
 import { Display } from './display/display';
 import { Database } from './database';
 import { Controller } from './controllers/controller';

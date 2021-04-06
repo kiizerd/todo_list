@@ -1,5 +1,5 @@
 import { Generator } from '../generator';
-import { EventAggregator } from '../events/events';
+import { EventAggregator } from '../events';
 import { format } from 'date-fns';
 
 const Display = (function() {
@@ -206,7 +206,7 @@ const Display = (function() {
     const btn = document.createElement('button');
     btn.classList.add('btn', 'btn-dark', 'm-3', 'w-25');
     btn.textContent = 'New Project';
-    btn.onclick = showNewProjectModal();
+    btn.onclick = () => EventAggregator.publish('newProjectClicked', btn);
 
     return btn
   }
