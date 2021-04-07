@@ -48,15 +48,20 @@ const Generator = (function() {
 
     function getModalContent() {
       const content = document.createElement('div');
-      content.classList.add('modal-content');
+      content.classList.add('modal-content', 'bg-dark', 'text-white');
+      content.classList.add('border', 'border-dark');
 
       const header = getModalHeader();
 
+      modal.header = header;
+
       function getModalHeader() {
         const header = document.createElement('div');
-        header.classList.add('modal-header');
+        header.classList.add('modal-header', 'border-darkgray');
 
         const title = getModalTitle();
+
+        header.title = title;
 
         function getModalTitle() {
           const h = document.createElement('h5');
@@ -70,7 +75,7 @@ const Generator = (function() {
 
         function getCloseBtn() {
           const btn = document.createElement('button');
-          btn.classList.add('btn-close');
+          btn.classList.add('btn-close', 'btn-close-white');
           btn.type = 'button';
           btn.setAttribute('data-bs-dismiss', 'modal');
           btn.setAttribute('aria-label', 'Close');
@@ -85,6 +90,8 @@ const Generator = (function() {
       
       const body = getModalBody();
 
+      modal.body = body;
+
       function getModalBody() {
         const body = document.createElement('div');
         body.classList.add('modal-body');
@@ -94,9 +101,11 @@ const Generator = (function() {
 
       const footer = getModalFooter();
 
+      modal.footer = footer;
+
       function getModalFooter() {
         const footer = document.createElement('div');
-        footer.classList.add('modal-footer');
+        footer.classList.add('modal-footer', 'border-darkgray');
         
         const closeBtn = getFooterCloseBtn();
 
@@ -127,13 +136,6 @@ const Generator = (function() {
       content.append(header, body, footer);
 
       return content
-    }
-
-
-    modal._isShown = false
-
-    modal.toggle = () => {
-      
     }
 
     modal.append(modalDialog);

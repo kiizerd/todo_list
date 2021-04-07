@@ -5,18 +5,18 @@ const Display = (function() {
 
   EventAggregator.subscribe('newProjectClicked', () => {
     let modal = document.getElementById('newProjectModal');
-    if (modal) {}
-    else {
-      modal = getNewProjectModal();
-    }
-
-    console.log(modal)
-
-    modal.toggle();
+    if (!modal) modal = getNewProjectModalObj()._element;
+    modal.bootstrapObject.toggle();
   });
 
-  function getNewProjectModal() {
+  function getNewProjectModalObj() {
     const modalObj = Generator.createModal();
+    const modal = modalObj._element;
+    modal.id = 'newProjectModal';
+
+    modal.bootstrapObject = modalObj;
+    
+    console.log(modal);
 
     return modalObj
   }
