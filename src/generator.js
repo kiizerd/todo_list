@@ -4,26 +4,51 @@ const Generator = (function() {
   
   function createCard() {
     const card = document.createElement('div');
-    card.classList.add('card', 'mt-3', 'w-100');
+    card.classList.add('card');
 
-    card.header = getCardHeader()
-    card.body = getCardBody()
+    const cardFirstContent = getCardFirstContent();
+    card.firstContent = cardFirstContent;
 
-    function getCardHeader() {
-      const header = document.createElement('h5');
-      header.classList.add('card-header')
+    function getCardFirstContent() {
+      const cardContent = document.createElement('div');
+      cardContent.classList.add('content');
+      
+      const cardHeader = getCardHeader();
+      card.header = cardHeader;
 
-      return header
+      const cardMeta = getCardMeta();
+      card.meta = cardMeta;
+
+      const cardDesc = getCardDesc();
+      card.desc = cardDesc;
+
+      cardContent.append(cardHeader, cardMeta, cardDesc);
+
+      return cardContent
+      
+      function getCardHeader() {
+        const header = document.createElement('h5');
+        header.classList.add('header');
+        
+        return header
+      }
+
+      function getCardMeta() {
+        const meta = document.createElement('div');
+        meta.classList.add('meta');
+
+        return meta
+      }
+      
+      function getCardDesc() {
+        const desc = document.createElement('div');
+        desc.classList.add('description');
+        
+        return desc
+      }
     }
 
-    function getCardBody() {
-      const body = document.createElement('div');
-      body.classList.add('card-body');
-
-      return body
-    }
-
-    card.append(card.header, card.body);
+    card.append(cardFirstContent);
 
     return card
   }
@@ -33,13 +58,13 @@ const Generator = (function() {
     modal.classList.add('modal');
     modal.tabIndex = '-1';
 
-    const modalDialog = getModalDialog()
+    const modalDialog = getModalDialog();
 
     function getModalDialog() {
       const dialog = document.createElement('div');
       dialog.classList.add('modal-dialog');
 
-      const content = getModalContent()
+      const content = getModalContent();
 
       dialog.append(content);
 

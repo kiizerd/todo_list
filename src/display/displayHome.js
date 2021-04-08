@@ -6,34 +6,31 @@ const Display = (function() {
 
   function getHomePage() {
     const homepage = document.createElement('div');
-    homepage.classList.add('container-fluid');
+    homepage.classList.add('container');
     homepage.id = 'homepage';
     
-    const div = getProjectsContainer();    
-
-    function getProjectsContainer() {
-      const div = document.createElement('div');
-      div.classList.add('container-fluid', 'm-0', 'p-0');
-      div.classList.add('row', 'row-cols-sm-2', 'row-cols-md-3');
-      div.id = 'projects-container';
-
-      return div
-    }
-
-    const projectCards = getProjectCards();
-
-    for (const card of projectCards) {
-      const column = document.createElement('div');
-      column.classList.add('col');
-      column.append(card);
-
-      div.append(column);
-    }
+    const div = getProjectsContainer();
 
     const addProjectBtn = getAddProjectBtn()
 
     homepage.append(div, addProjectBtn);
+
     return homepage;
+
+    function getProjectsContainer() {
+      const div = document.createElement('div');
+      div.classList.add('ui', 'inverted', 'stackable', 'three', 'cards');
+      div.id = 'projects-container';
+      
+      const projectCards = getProjectCards();
+
+      for (const card of projectCards) {
+        div.append(card);
+      }
+
+      return div
+    }
+
   }
 
   function getProjectCards(options) {
@@ -59,10 +56,9 @@ const Display = (function() {
     });
 
     function createProjectCard(project) {
-      const card = Generator.createCard()
-      fillCard(card, project)
-      card.classList.add('project-cards', 'bg-dark', 'text-white',
-                         'col-4', 'col-xs-6', 'm-2', 'p-1');
+      const card = Generator.createCard();
+      card.classList.add('homepage-project-card');
+      fillCard(card, project);
 
       return card
     }
@@ -72,34 +68,34 @@ const Display = (function() {
 
   function fillCard(card, project) {
     card.header.textContent = project.title;
-    fillCardBody(card.body, project);
 
-    function fillCardBody(body, project) {
-      body.subtitle = document.createElement('h6');
-      body.subtitle.classList.add('card-subtitle', 'p-1');
-      body.subtitle.textContent = project.description;
+    card.desc.textContent = project.description;
+    
+    card.meta.append(getCardPriority())
 
-      body.priority = getCardPriority(project.priority);
-      body.dates = getCardDates(project.dates);
-      body.tasks = getCardTasks(project.tasks);
+    card.dates = getCardDatesContent();    
+    
+    card.tasks = getCardTasksContent(project);
+
+    card.append(card.dates, card.tasks);
       
-      body.append(body.subtitle, body.priority, body.dates, body.tasks)
-    }
 
-    function getCardPriority(priority) {
+    function getCardPriority() {
+      const priority = project.priority;
+
       const div = document.createElement('div');
-      div.classList.add('project-priority', 'text-white-50', 'p-2');
+      div.classList.add('project-priority',);
       div.textContent = 'Priority: '
 
       const span = document.createElement('span');
       if (priority === 0) {
-        span.classList.add('text-danger');
+        span.classList.add('ui', 'error', 'text');
         span.textContent = 'High';
       } else if (priority === 1) {
-        span.classList.add('text-info');
+        span.classList.add('ui', 'info', 'text');
         span.textContent = 'Normal';
       } else if (priority === 2) {
-        span.classList.add('text-success');
+        span.classList.add('ui', 'success', 'text');
         span.textContent = 'Low';
       }
 
@@ -108,114 +104,141 @@ const Display = (function() {
       return div
     }
 
-    function getCardDates(dates) {
+    function getCardDatesContent() {
+      const datesContent = document.createElement('div');
+      datesContent.classList.add('content');
+
+      const dates = project.dates;
+
       const div = document.createElement('div');
-      div.classList.add('bg-secondary', 'project-dates-container', 'm-2', 'p-2');
+      div.classList.add('ui', 'grey', 'inverted', 'segment');
 
       const dateStarted = document.createElement('p');
       dateStarted.textContent = 'Started on: ' + dates.started;
-      dateStarted.classList.add('mb-1')
 
       const dueDate = document.createElement('p');
       dueDate.textContent = 'Due by: ' + dates.due;
-      dueDate.classList.add('mb-1')
 
       div.append(dateStarted, dueDate);
 
-      return div
+      datesContent.append(div)
+
+      return datesContent
     }
   }  
 
-  function getCardTasks(tasks) {
+  function getCardTasksContent(project) {
+    const tasksContent = document.createElement('div');
+    tasksContent.classList.add('content');
+
+    const tasks = project.tasks;
+
     const div = document.createElement('div');
-    div.classList.add('card-tasks-container');
+    div.classList.add('ui', 'grey', 'inverted', 'segment');
     
     const taskList = getTaskList();
     
     const addTaskBtn = getAddTaskBtn();
+
+    div.append(taskList, addTaskBtn);
+
+    tasksContent.append(div);
+
+    return tasksContent
+    
+    function getTaskList() {
+      const list = document.createElement('div');
+      list.classList.add('ui', 'inverted', 'relaxed', 'divided', 'list');
+    
+      fillTaskList(list);
+
+      return list;
+
+      // temporarily fills project with mock tasks if project taskList is empty
+      function fillTaskList() {
+        if (tasks) {
+          console.log('tasks', tasks)
+          list.append(
+            getListItem({
+              title: 'task 1',
+              priority: 0
+            }),
+            getListItem({
+              title: 'task2',
+              priority: 1
+            }),
+            getListItem({
+              title: 'task3',
+              priority: 2
+            })
+          );
+  
+        } else {
+          for (const task of tasks) {
+            let listItem = getListItem(task);
+            list.append(listItem);
+          };
+        };
+      };
+  
+      function getListItem(task) {
+        const item = document.createElement('div');
+        item.classList.add('item');
+
+        const itemContent = getItemContent()
+
+        item.append(itemContent);
+
+        return item
+
+        function getItemContent() {
+          const itemContent = document.createElement('div');
+          itemContent.classList.add('content');
+
+          const itemMessage = getItemMessage();
+
+          itemContent.append(itemMessage);
+          
+          return itemContent
+        }
+  
+        function getItemMessage() {
+          const itemMessage = document.createElement('div');
+          itemMessage.classList.add('ui', 'message');
+          itemMessage.textContent = task.title;
+  
+          if (task.priority === 0) itemMessage.classList.add('error');
+          if (task.priority === 1) itemMessage.classList.add('info');
+          if (task.priority === 2) itemMessage.classList.add('positive');
+  
+          return itemMessage;
+        };
+
+      };
+  
+    };
     
     function getAddTaskBtn() {
       const btn = document.createElement('button');
-      btn.classList.add('btn', 'btn-secondary', 'btn-small', 'm-2');
-      btn.classList.add('add-task-btn-project-card', 'add-task-btn');
+      btn.classList.add('circular', 'ui' ,'icon', 'button');
+      btn.classList.add('project-card-add-task-btn', 'add-task-btn');
       
       const icon = document.createElement('i');
-      icon.classList.add('bi', 'bi-plus');
+      icon.classList.add('plus', 'icon');
       
       btn.append(icon);
       
       return btn;
     };
-    
-    function getTaskList() {
-      const list = document.createElement('ul');
-      list.classList.add('list-group', 'm-2');
-    
-      fillTaskList(list);
 
-      return list;
-    };
-    
-    // temporarily fills project with mock tasks if project taskList is empty
-    function fillTaskList(list) {
-      if (tasks) {
-        console.log('tasks', tasks)
-        list.append(
-          getListItem({
-            title: 'task 1',
-            priority: 0
-          }),
-          getListItem({
-            title: 'task2',
-            priority: 1
-          }),
-          getListItem({
-            title: 'task3',
-            priority: 2
-          })
-        );
-
-      } else {
-        for (const task of tasks) {
-          let listItem = getListItem(task);
-          list.append(listItem);
-        }
-      };
-    };
-
-    function getListItem(task) {
-      const item = document.createElement('li');
-      item.classList.add('list-group-item', 'bg-secondary', 'p-1');
-
-      const alert = getAlert()
-
-      function getAlert() {
-        const div = document.createElement('div');
-        div.classList.add('alert', 'm-0', 'p-1', 'text-center');
-        div.textContent = task.title;
-        div.role = 'alert';
-
-        if (task.priority === 0) div.classList.add('alert-danger')
-        if (task.priority === 1) div.classList.add('alert-info')
-        if (task.priority === 2) div.classList.add('alert-success')
-
-        return div
-      }
-
-      item.append(alert);
-
-      return item
-    }
-
-    div.append(taskList, addTaskBtn);
-
-    return div
   }
 
   function getAddProjectBtn() {
     const btn = document.createElement('button');
-    btn.classList.add('btn', 'btn-dark', 'm-3', 'w-25');
+    btn.classList.add('ui', 'secondary', 'button');
+    btn.id = 'homepage-new-project-btn';
     btn.textContent = 'New Project';
+
     btn.onclick = () => EventAggregator.publish('newProjectClicked', btn);
 
     return btn

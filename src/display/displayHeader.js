@@ -1,5 +1,5 @@
 // import { Collapse, Dropdown } from 'bootstrap';
-import { boostrap } from 'bootstrap';
+// import { boostrap } from 'bootstrap';
 
 const Display = (function() {
   const content = document.getElementById('content');
@@ -123,7 +123,7 @@ const Display = (function() {
         
             if (item === 'project') {
               link.classList.add('dropdown-toggle');
-              const dropdownObj = new bootstrap.Dropdown(link);
+              // const dropdownObj = new bootstrap.Dropdown(link);
               link.setAttribute('data-bs-toggle', 'dropdown');
               link.setAttribute('aria-expanded', 'false');
               link.textContent = 'Projects';

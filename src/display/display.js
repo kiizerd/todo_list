@@ -1,5 +1,5 @@
 import { EventAggregator } from '../events';
-import { getHeader } from './displayHeader';
+// import { getHeader } from './displayHeader';
 import { getHomePage } from './displayHome';
 import { Project } from './displayProject';
 
@@ -15,7 +15,7 @@ const Display = (function() {
   function setActivePage(pageName) {
     let page = getPage(pageName);
     content.innerHTML = '';
-    content.append(getHeader(), page());
+    content.append(page());
     window.scrollTo(0, 0);
     
     console.log('going to -->> ' + pageName);
