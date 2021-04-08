@@ -1,3 +1,4 @@
+import { EventAggregator } from '../events';
 import { getHeader } from './displayHeader';
 import { getHomePage } from './displayHome';
 import { Project } from './displayProject';
@@ -30,7 +31,8 @@ const Display = (function() {
   }
 
   function selectProjectPage(projectName) {
-    Project.getProjectPage(projectName);
+    // Project.getProjectPageAsClosure(projectName);
+    return (projectName) => {console.log(projectName)}
   }
 
   function getTaskCard(task) {}

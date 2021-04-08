@@ -9,23 +9,23 @@ Database;
 Controller;
 
 EventAggregator.publish('createProject', {
-  title: 'Project 1',
-  description: 'a small summary of the project',
-  priority: 0,
+  title: 'General',
+  description: 'A non-specific list of generic tasks.',
+  priority: 1,
   dueDate: new Date(2069, 3, 8)
 });
 
 EventAggregator.publish('createProject', {
-  title: 'Project 12',
-  description: 'a small summary of the project not too big not too small',
+  title: 'Work',
+  description: 'Tasks that need to be completed for your job.',
   priority: 1,
   dueDate: new Date(2022, 1, 7)
 });
 
 EventAggregator.publish('createProject', {
-  title: 'Project 412',
-  description: 'a small summary of the project not too big not too small',
-  priority: 2,
+  title: 'Home',
+  description: 'A list of household chores and duties.',
+  priority: 1,
   dueDate: new Date(2022, 6, 9)
 });
 
