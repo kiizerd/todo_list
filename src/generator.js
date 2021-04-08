@@ -4,7 +4,7 @@ const Generator = (function() {
   
   function createCard() {
     const card = document.createElement('div');
-    card.classList.add('card')
+    card.classList.add('card', 'mt-3', 'w-100');
 
     card.header = getCardHeader()
     card.body = getCardBody()
@@ -53,15 +53,11 @@ const Generator = (function() {
 
       const header = getModalHeader();
 
-      modal.header = header;
-
       function getModalHeader() {
         const header = document.createElement('div');
         header.classList.add('modal-header', 'border-darkgray');
 
         const title = getModalTitle();
-
-        header.title = title;
 
         function getModalTitle() {
           const h = document.createElement('h5');
@@ -90,8 +86,6 @@ const Generator = (function() {
       
       const body = getModalBody();
 
-      modal.body = body;
-
       function getModalBody() {
         const body = document.createElement('div');
         body.classList.add('modal-body');
@@ -100,8 +94,6 @@ const Generator = (function() {
       }
 
       const footer = getModalFooter();
-
-      modal.footer = footer;
 
       function getModalFooter() {
         const footer = document.createElement('div');
@@ -145,7 +137,13 @@ const Generator = (function() {
     return modalObj
   }
 
-  return { createCard, createModal }
+  function createForm() {
+    const form = document.createElement('form');
+
+    return form
+  }
+
+  return { createCard, createModal, createForm }
 })();
 
 export { Generator }
