@@ -5,26 +5,35 @@ import { format } from 'date-fns';
 const Display = (function() {
 
   function getHomePage() {
+    const homepage = document.createElement('div');
+    homepage.classList.add('container-fluid');
+    homepage.id = 'homepage';
+    
     const div = getProjectsContainer();    
 
     function getProjectsContainer() {
       const div = document.createElement('div');
-      div.classList.add('container-fluid');
-      div.classList.add('row', 'row-cols-xs-2', 'row-cols-md-3');
+      div.classList.add('container-fluid', 'm-0', 'p-0');
+      div.classList.add('row', 'row-cols-sm-2', 'row-cols-md-3');
       div.id = 'projects-container';
 
       return div
     }
 
-    const projectCards = getProjectCards()
+    const projectCards = getProjectCards();
 
-    projectCards.forEach(card => {
-      div.append(card);
-    });
+    for (const card of projectCards) {
+      const column = document.createElement('div');
+      column.classList.add('col');
+      column.append(card);
 
-    div.append(getAddProjectBtn());
+      div.append(column);
+    }
 
-    return div;
+    const addProjectBtn = getAddProjectBtn()
+
+    homepage.append(div, addProjectBtn);
+    return homepage;
   }
 
   function getProjectCards(options) {
@@ -147,6 +156,7 @@ const Display = (function() {
       return list;
     };
     
+    // temporarily fills project with mock tasks if project taskList is empty
     function fillTaskList(list) {
       if (tasks) {
         console.log('tasks', tasks)
@@ -166,10 +176,10 @@ const Display = (function() {
         );
 
       } else {
-        tasks.forEach(task => {
-          let listItem = getListItem(task)
+        for (const task of tasks) {
+          let listItem = getListItem(task);
           list.append(listItem);
-        });
+        }
       };
     };
 
