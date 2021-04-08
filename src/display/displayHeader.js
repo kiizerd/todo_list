@@ -1,4 +1,5 @@
-import { projectInterface } from '../'
+// import { Collapse, Dropdown } from 'bootstrap';
+import { boostrap } from 'bootstrap';
 
 const Display = (function() {
   const content = document.getElementById('content');
@@ -38,6 +39,7 @@ const Display = (function() {
   function getNavContainer() {
     const div = document.createElement('div');
     div.classList.add('container-fluid');
+    div.id = 'nav-container';
 
     const navBrand = getNavBrand();
 
@@ -51,24 +53,6 @@ const Display = (function() {
     };
 
     const navToggler = getNavToggler();
-            
-    function getNavToggler() {
-      const toggler = document.createElement('button');
-      toggler.classList.add('navbar-toggler');
-      toggler.type = 'button';
-      toggler.setAttribute('data-bs-toggle', 'collapse');
-      toggler.setAttribute('data-bs-target', '#nav-collapse');
-      toggler.setAttribute('aria-controls', 'nav-collapse');
-      toggler.setAttribute('aria-expanded', 'false');
-      toggler.setAttribute('aria-label', 'Toggle navigation');
-
-      const span = document.createElement('span');
-      span.classList.add('navbar-toggler-icon');
-
-      toggler.append(span);
-
-      return toggler;
-    };        
 
     const navCollapse = getNavCollapse();
 
@@ -76,11 +60,31 @@ const Display = (function() {
 
     return div
   };
+  
+  function getNavToggler() {
+    const toggler = document.createElement('button');
+    toggler.classList.add('navbar-toggler');
+    toggler.setAttribute('data-bs-toggle', 'collapse');
+    toggler.setAttribute('data-bs-target', '#nav-collapse');
+    toggler.setAttribute('aria-controls', 'nav-collapse');
+    toggler.setAttribute('aria-expanded', 'false');
+    toggler.setAttribute('aria-label', 'Toggle navigation');
+    toggler.type = 'button';
+
+    const span = document.createElement('span');
+    span.classList.add('navbar-toggler-icon');
+
+    toggler.append(span);
+
+    return toggler;
+  };        
 
   function getNavCollapse() {
     const div = document.createElement('div');
-    div.classList.add('collapse', 'navbar-collapse');
     div.id = 'nav-collapse';
+    div.classList.add('collapse', 'navbar-collapse');
+    div.setAttribute('data-bs-toggle', 'collapse');
+    div.setAttribute('data-bs-target', '#nav-collapse');
 
     const navList = getNavList();
     
@@ -107,7 +111,7 @@ const Display = (function() {
     
         if (item === 'project') {
           listItem.classList.add('dropdown');
-          listItem.append(getDropdownMenu())
+          listItem.append(getDropdownMenu());
         }
         
         function getNavItemLink(item) {
@@ -117,8 +121,9 @@ const Display = (function() {
             link.href = '#';
             link.tag = item;
         
-            if (item === 'project') {      
+            if (item === 'project') {
               link.classList.add('dropdown-toggle');
+              const dropdownObj = new bootstrap.Dropdown(link);
               link.setAttribute('data-bs-toggle', 'dropdown');
               link.setAttribute('aria-expanded', 'false');
               link.textContent = 'Projects';
