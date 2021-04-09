@@ -1,6 +1,5 @@
 import { Generator } from '../generator';
 import { EventAggregator } from '../events';
-import { format } from 'date-fns';
 
 const Display = (function() {
 
@@ -236,6 +235,7 @@ const Display = (function() {
   function getAddProjectBtn() {
     const btn = document.createElement('button');
     btn.classList.add('ui', 'secondary', 'button');
+    btn.classList.add('new-project-btn');
     btn.id = 'homepage-new-project-btn';
     btn.textContent = 'New Project';
 

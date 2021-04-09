@@ -5,26 +5,44 @@ const Display = (function() {
 
   EventAggregator.subscribe('newProjectClicked', () => {
     let modal = document.getElementById('newProjectModal');
-    if (!modal) modal = getNewProjectModalObj()._element;
+    if (!modal) {
+      modal = getNewProjectModalObj();
+      document.body.append(modal);
+    }
 
-    console.log(modal);
+    $('.ui.modal')
+      .modal('show')
+    ;
 
-    modal.bootstrapObject.toggle();
+    $('#new-form-priority-dropdown')
+      .dropdown()
+    ;
+
+    $('.ui.checkbox')
+      .checkbox()
+    ;
+
+    $('.ui.calendar').calendar({
+      type: 'date'
+    });
+
+    const initToggles = initFormToggles();
+    for (const toggle of initToggles) {
+      toggle();
+    }
   });
 
   function getNewProjectModalObj() {
-    const modalObj = Generator.createModal();
-    const modal = modalObj._element;
+    const modal = Generator.createModal();
     modal.id = 'newProjectModal';
-    modal.bootstrapObject = modalObj;
 
-    const modalTitle = document.querySelector('#newProjectModal .modal-title');
+    modal.header.textContent = 'New Project';
 
-    console.log(modalTitle);
+    const modalForm = getNewProjectForm()
 
-    console.log(modal.header);
+    modal.content.append(modalForm);
 
-    return modalObj
+    return modal
   };
 
   function getNewProjectForm() {
@@ -35,6 +53,44 @@ const Display = (function() {
 
   function getProjectPage(projectName) {
     
+  };
+
+  function initFormToggles() {
+    function initDueDateToggle() {
+      const fieldId = 'new-form-dueDateField';
+      const toggleId = 'new-form-dueDateToggle';
+      const dueDateToggle = document.getElementById(toggleId);
+      dueDateToggle.classList.remove('hidden');
+      console.log('made it here 3', dueDateToggle)
+      dueDateToggle.onclick = () => {
+        console.log(dueDateToggle, 'clicked');
+        const dueDateField = document.getElementById(fieldId);
+        if (dueDateToggle.checked) {
+          dueDateField.classList.remove('disabled');
+        } else {
+          dueDateField.classList.add('disabled');
+        };
+      };
+    };
+
+    function initDateStartedToggle() {
+      const fieldId = 'new-form-dateStartedField';
+      const toggleId = 'new-form-dateStartedToggle';
+      const dateStartedToggle = document.getElementById(toggleId);
+      dateStartedToggle.classList.remove('hidden');
+      console.log('made it here 3.5', dateStartedToggle)
+      dateStartedToggle.onclick = () => {
+        console.log(dateStartedToggle, 'clicked');
+        const dateStartedField = document.getElementById(fieldId);
+        if (dateStartedToggle.checked) {
+          dateStartedField.classList.add('disabled');
+        } else {
+          dateStartedField.classList.remove('disabled');
+        };
+      };
+    };
+
+    return [initDueDateToggle, initDateStartedToggle]
   };
 
   return { getProjectPage }
