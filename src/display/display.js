@@ -1,13 +1,14 @@
 import { EventAggregator } from '../events';
-// import { getHeader } from './displayHeader';
+import { addClickEvents } from './displayHeader';
 import { getHomePage } from './displayHome';
 import { Project } from './displayProject';
 
 const Display = (function() {
-  Project;
+  Project; // temp module call to make sure displayProject is run
   const content = document.getElementById('content');
 
   function init() {
+    addClickEvents();
     setActivePage('home');
     content.setActivePage = setActivePage
   }
@@ -17,8 +18,8 @@ const Display = (function() {
     content.innerHTML = '';
     content.append(page());
     window.scrollTo(0, 0);
-    
-    console.log('going to -->> ' + pageName);
+
+    console.log('going to page -->>', pageName);
   }
 
   function getPage(name) {
@@ -32,18 +33,12 @@ const Display = (function() {
 
   function selectProjectPage(projectName) {
     // Project.getProjectPageAsClosure(projectName);
-    return (projectName) => {console.log(projectName)}
+    return (projectName) => { console.log('Project clicked:', projectName) };
   }
 
   function getTaskCard(task) {}
 
-  function getHistoryPage() {
-    console.log('GET - History Page - 404 - Page not made lol')
-  }
-
-  function showNewProjectModal() {
-    console.log('fuckpo')
-  }
+  function getHistoryPage() {}
 
   return { init }
 })();
