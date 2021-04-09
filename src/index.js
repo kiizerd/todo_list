@@ -23,7 +23,7 @@ EventAggregator.publish('createProject', {
 });
 
 EventAggregator.publish('createProject', {
-  title: 'Home',
+  title: 'House',
   description: 'A list of household chores and duties.',
   priority: 1,
   dueDate: new Date(2022, 6, 9)
