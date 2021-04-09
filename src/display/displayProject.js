@@ -61,9 +61,7 @@ const Display = (function() {
       const toggleId = 'new-form-dueDateToggle';
       const dueDateToggle = document.getElementById(toggleId);
       dueDateToggle.classList.remove('hidden');
-      console.log('made it here 3', dueDateToggle)
       dueDateToggle.onclick = () => {
-        console.log(dueDateToggle, 'clicked');
         const dueDateField = document.getElementById(fieldId);
         if (dueDateToggle.checked) {
           dueDateField.classList.remove('disabled');
@@ -78,9 +76,7 @@ const Display = (function() {
       const toggleId = 'new-form-dateStartedToggle';
       const dateStartedToggle = document.getElementById(toggleId);
       dateStartedToggle.classList.remove('hidden');
-      console.log('made it here 3.5', dateStartedToggle)
       dateStartedToggle.onclick = () => {
-        console.log(dateStartedToggle, 'clicked');
         const dateStartedField = document.getElementById(fieldId);
         if (dateStartedToggle.checked) {
           dateStartedField.classList.add('disabled');
