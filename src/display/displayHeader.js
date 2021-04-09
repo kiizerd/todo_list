@@ -3,8 +3,8 @@ import { EventAggregator } from '../events';
 const Display = (function() {
   
   EventAggregator.subscribe('projectCreated', project => {
-    addProjectToMenu(project)
-  })
+    addProjectToMenu(project);
+  });
 
   function addProjectToMenu(project) {
     const projectsMenu = document.getElementById('header-projects-menu');
@@ -17,10 +17,13 @@ const Display = (function() {
       item.href = '#'
       item.tag = item.textContent = project.title;
 
+      
       return item
     }
-
+    
     projectsMenu.append(newProjectItem);
+    
+    addClickEvents();
   }
 
   function addClickEvents() {
@@ -38,9 +41,14 @@ const Display = (function() {
     content.setActivePage(e.target.tag);    
   }
 
-  return { addClickEvents }
+  function addProjectEvent() {
+    const btn = document.getElementById('header-new-project-btn');
+    btn.onclick = () => EventAggregator.publish('newProjectClicked', btn);
+  }
+
+  return { addProjectEvent }
 })();
 
-const addClickEvents = Display.addClickEvents;
+const addProjectEvent = Display.addProjectEvent;
 
-export { addClickEvents };
+export { addProjectEvent };

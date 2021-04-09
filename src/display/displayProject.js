@@ -4,7 +4,7 @@ import { Generator } from '../generator'
 const Display = (function() {
 
   EventAggregator.subscribe('newProjectClicked', () => {
-    let modal = document.getElementById('newProjectModal');
+    let modal = document.getElementById('new-project-modal');
     if (!modal) {
       modal = getNewProjectModalObj();
       document.body.append(modal);
@@ -26,6 +26,8 @@ const Display = (function() {
       type: 'date'
     });
 
+    addConfirmClickEvent();
+
     const initToggles = initFormToggles();
     for (const toggle of initToggles) {
       toggle();
@@ -34,11 +36,11 @@ const Display = (function() {
 
   function getNewProjectModalObj() {
     const modal = Generator.createModal();
-    modal.id = 'newProjectModal';
+    modal.id = 'new-project-modal';
 
     modal.header.textContent = 'New Project';
 
-    const modalForm = getNewProjectForm()
+    const modalForm = getNewProjectForm();
 
     modal.content.append(modalForm);
 
@@ -47,9 +49,34 @@ const Display = (function() {
 
   function getNewProjectForm() {
     const form = Generator.createForm();
+    form.id = 'new-project-form';
+    form.onsubmit = "return false";
 
     return form
   };
+
+  function addConfirmClickEvent() {
+    const confirmBtn = document.querySelector('#new-project-modal .actions .positive');
+    confirmBtn.onclick = () => { 
+      const formData = getNewProjectFormData();
+      EventAggregator.publish('createProject', formData);
+    }
+  }
+
+  function getNewProjectFormData() {
+    const form = document.forms['new-project-form'];
+
+    return {
+      title: form.elements[0].value,
+      priority: form.elements[1].value,
+      description: form.elements[2].value,
+      dates: {
+        started: form.elements[4],
+        due: form.elements[5]
+      }
+    };
+
+  }
 
   function getProjectPage(projectName) {
     

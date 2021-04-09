@@ -3,29 +3,36 @@ import { EventAggregator } from '../events';
 
 const Display = (function() {
 
+  
   function getHomePage() {
     const homepage = document.createElement('div');
     homepage.classList.add('container');
     homepage.id = 'homepage';
     
     const div = getProjectsContainer();
-
+    
     const addProjectBtn = getAddProjectBtn()
-
+    
     homepage.append(div, addProjectBtn);
-
+    
+    
     return homepage;
-
     function getProjectsContainer() {
       const div = document.createElement('div');
       div.classList.add('ui', 'inverted', 'stackable', 'three', 'cards');
       div.id = 'projects-container';
       
       const projectCards = getProjectCards();
-
+      
       for (const card of projectCards) {
         div.append(card);
-      }
+      }       
+      
+      EventAggregator.subscribe('projectCreated', newProject => {
+        let newCard = createProjectCard(newProject);
+        div.append(newCard);
+        console.log('im working');
+      });
 
       return div
     }
@@ -54,15 +61,15 @@ const Display = (function() {
       filter: 'default'
     });
 
-    function createProjectCard(project) {
-      const card = Generator.createCard();
-      card.classList.add('homepage-project-card');
-      fillCard(card, project);
-
-      return card
-    }
-
     return cardList
+  }
+
+  function createProjectCard(project) {
+    const card = Generator.createCard();
+    card.classList.add('homepage-project-card');
+    fillCard(card, project);
+
+    return card
   }
 
   function fillCard(card, project) {

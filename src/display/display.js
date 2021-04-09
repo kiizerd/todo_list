@@ -1,14 +1,15 @@
 import { EventAggregator } from '../events';
-import { addClickEvents } from './displayHeader';
+import { addProjectEvent } from './displayHeader';
 import { getHomePage } from './displayHome';
 import { Project } from './displayProject';
 
 const Display = (function() {
   Project; // temp module call to make sure displayProject is run
+  
   const content = document.getElementById('content');
 
   function init() {
-    addClickEvents();
+    addProjectEvent()
     setActivePage('home');
     content.setActivePage = setActivePage
   }
