@@ -127,26 +127,21 @@ const Generator = (function() {
   function createForm() {
     const form = document.createElement('form');
     form.classList.add('ui', 'form');
-    form.fields = {}
 
     const titleSegment = createSegment();
     const titleField = getTitleField();
-    form.fields.title = titleField;
     titleSegment.append(titleField);
 
     const descSegment = createSegment();
     const descField = getDescField();
-    form.fields.desc = descField;
     descSegment.append(descField);
 
     const prioritySegment = createSegment();
     const priorityField = getPriorityField();
-    form.fields.priority = priorityField;
     prioritySegment.append(priorityField);
 
     const datesSegment = createSegment();
     const datesField = getDateFields();
-    form.fields.dates = datesField;
     datesSegment.append(datesField);
 
     form.append(titleSegment, prioritySegment, descSegment, datesSegment);
@@ -159,11 +154,9 @@ const Generator = (function() {
 
       const label = document.createElement('label');
       label.textContent = 'Title';
-      field.label = label;     
 
       const input = document.createElement('input');
       input.type = 'text';
-      field.input = input;
 
       field.append(label, input);
 
@@ -176,11 +169,9 @@ const Generator = (function() {
 
       const label = document.createElement('label');
       label.textContent = 'Description';
-      field.label = label;
 
       const textArea = document.createElement('textarea');
       textArea.rows = '2';
-      field.input = textArea;
 
       field.append(label, textArea);
 
@@ -189,12 +180,14 @@ const Generator = (function() {
 
     function getPriorityField() {
       const field = document.createElement('div');
-      field.classList.add('six', 'wide', 'field');
+      field.classList.add('seven', 'wide', 'field');
+
+      const label = document.createElement('label');
+      label.textContent = 'Priority';
 
       const priorityDropdown = getPriorityDropdown();
-      field.input = priorityDropdown;
 
-      field.append(priorityDropdown);
+      field.append(label, priorityDropdown);
 
       return field
 
@@ -284,7 +277,7 @@ const Generator = (function() {
         function getDateStartedField() {
           const field = document.createElement('div');
           field.classList.add('field', 'disabled');
-          field.id = 'new-form-dateStartedField'
+          field.id = 'new-form-dateStartedField';
 
           const label = document.createElement('label');
           label.textContent = 'Date Started';
@@ -357,7 +350,7 @@ const Generator = (function() {
         function getDueDateField() {
           const field = document.createElement('div');
           field.classList.add('field', 'disabled');
-          field.id = 'new-form-dueDateField'
+          field.id = 'new-form-dueDateField';
 
           const label = document.createElement('label');
           label.textContent = 'Due Date';
