@@ -17,14 +17,7 @@ const ProjectController = (function() {
   EventAggregator.subscribe('createProject', formData => {
     EventAggregator.publish('formToProject', formData);
   });
-
   
-  EventAggregator.subscribe('projectFromForm', projectObj => {
-    let newProject = projectObj;
-    EventAggregator.publish('projectCreated', newProject);
-  });
-    
-
 
   let primedProject;
   EventAggregator.subscribe('primeProject', projectName => {
