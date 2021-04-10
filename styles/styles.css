@@ -6,15 +6,37 @@ html {
 }
 
 html, body {
+  height: 100%;
   max-width: 100%;
   overflow-x: hidden;
 }
 
 body {
+  display: flex;
+  flex-direction: column;
   background-color: slategray;
   overflow-x: hidden;
 }
 
+#content {
+  flex: 1 0 auto;
+}
+
 .ui.menu .item {
   padding: 0.5em 0.5em;
+}
+
+#footer {
+  flex-shrink: 0;
+  height: 50px;
+  padding: 20px;
+}
+
+#footer .internal.rail {
+  display: flex;
+  align-items: center;
+}
+
+#footer .right.rail {
+  justify-content: end;
 }
