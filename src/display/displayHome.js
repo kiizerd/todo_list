@@ -1,9 +1,8 @@
 import { Generator } from '../generator';
-import { EventAggregator } from '../events';
+import { EventAggregator, Token } from '../events';
 
 const Display = (function() {
 
-  
   function getHomePage() {
     const homepage = document.createElement('div');
     homepage.classList.add('container');
@@ -13,28 +12,46 @@ const Display = (function() {
     
     const addProjectBtn = getAddProjectBtn()
     
-    homepage.append(div, addProjectBtn);
-    
+    homepage.append(div, addProjectBtn);    
     
     return homepage;
+
     function getProjectsContainer() {
       const div = document.createElement('div');
-      div.classList.add('ui', 'inverted', 'stackable', 'three', 'cards');
+      div.classList.add('ui', 'relaxed', 'centered', 'stackable', 'three', 'column', 'grid');
       div.id = 'projects-container';
       
       const projectCards = getProjectCards();
       
       for (const card of projectCards) {
-        div.append(card);
-      }       
+        const column = getColumn();
+        
+        column.append(card);
+
+        div.append(column);
+      }
       
       EventAggregator.subscribe('projectCreated', newProject => {
-        let newCard = createProjectCard(newProject);
-        div.append(newCard);
-        console.log('im working');
+        const column = getColumn();
+
+        const newCard = createProjectCard(newProject);
+
+        column.append(newCard);
+
+        div.append(column);
       });
 
       return div
+
+      function getColumn() {
+        const column = document.createElement('div');
+        column.classList.add('column');
+        column.style.display = 'flex';
+        column.style.flexDirection = 'column';
+        column.style.alignItems = 'center';
+
+        return column
+      }
     }
 
   }
@@ -42,24 +59,27 @@ const Display = (function() {
   function getProjectCards(options) {
     const projectList = [];
     const cardList = [];
-        
-    EventAggregator.subscribe('projectsReceipt', projects => {
-      // reset local list to guarantee most up to date information
+    
+    const requestToken = new Token('requestProjects', 'displayHome');
+    
+    const projectsReceiptHandler = function(projects) {
+      if (projects._token && !(projects._token === requestToken)) return false
       projectList.length = 0;
-
+      
       projects.forEach(project => projectList.push(project));
-
+      
       for (let i = 0; i < projectList.length; i++) {
         let card = createProjectCard(projectList[i]);
         cardList.push(card);
       };
-    });
+      
+    };
 
+    EventAggregator.subscribe('projectsReceipt', projectsReceiptHandler);
     
-    EventAggregator.publish('requestProjects', options ? options : {
-      sort: 'default',
-      filter: 'default'
-    });
+    const requestObj = { _token: requestToken };
+    
+    EventAggregator.publish('requestProjects', requestObj);
 
     return cardList
   }
@@ -137,55 +157,34 @@ const Display = (function() {
     const tasksContent = document.createElement('div');
     tasksContent.classList.add('content');
 
-    const tasks = project.tasks;
-
-    const div = document.createElement('div');
-    div.classList.add('ui', 'grey', 'inverted', 'segment');
+    const tasksSegment = document.createElement('div');
+    tasksSegment.classList.add('ui', 'grey', 'inverted', 'segment');
     
     const taskList = getTaskList();
-    
-    const addTaskBtn = getAddTaskBtn();
+    const addTaskBtn = getAddTaskBtn();    
 
-    div.append(taskList, addTaskBtn);
+    tasksSegment.append(taskList, addTaskBtn);
 
-    tasksContent.append(div);
+    EventAggregator.subscribe('taskCreated', newTask => {
+      tasksSegment.innerHTML = ''
+      tasksSegment.append(getTaskList(), getAddTaskBtn());
+    });
+
+    tasksContent.append(tasksSegment);
 
     return tasksContent
     
     function getTaskList() {
       const list = document.createElement('div');
       list.classList.add('ui', 'inverted', 'relaxed', 'divided', 'list');
-    
-      fillTaskList(list);
+      list.id = project.title + 'project-card-task-list';
+
+      for (const task of project.tasks) {
+        const item = getListItem(task);
+        list.append(item);
+      }
 
       return list;
-
-      // temporarily fills project with mock tasks if project taskList is empty
-      function fillTaskList() {
-        if (tasks) {
-          console.log('tasks', tasks)
-          list.append(
-            getListItem({
-              title: 'task 1',
-              priority: 0
-            }),
-            getListItem({
-              title: 'task2',
-              priority: 1
-            }),
-            getListItem({
-              title: 'task3',
-              priority: 2
-            })
-          );
-  
-        } else {
-          for (const task of tasks) {
-            let listItem = getListItem(task);
-            list.append(listItem);
-          };
-        };
-      };
   
       function getListItem(task) {
         const item = document.createElement('div');
@@ -228,13 +227,18 @@ const Display = (function() {
       const btn = document.createElement('button');
       btn.classList.add('circular', 'ui' ,'icon', 'button');
       btn.classList.add('project-card-add-task-btn', 'add-task-btn');
+
+      btn.onclick = () => {
+        EventAggregator.publish('primeProject', project.title);
+        EventAggregator.publish('newTaskClicked', btn);
+      };
       
       const icon = document.createElement('i');
       icon.classList.add('plus', 'icon');
       
       btn.append(icon);
       
-      return btn;
+      return btn
     };
 
   }
