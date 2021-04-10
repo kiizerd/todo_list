@@ -3,30 +3,41 @@ import { Display } from './display/display';
 import { Database } from './database';
 import { Controller } from './controllers/controller';
 import { projectInterface } from './interfaces/projectInterface';
+import { taskInterface } from './interfaces/taskInterface';
 
 projectInterface;
+taskInterface;
 Database;
 Controller;
+
+Display.init();
 
 EventAggregator.publish('createProject', {
   title: 'General',
   description: 'A non-specific list of generic tasks.',
-  priority: 1,
-  dueDate: new Date(2069, 3, 8)
+  priority: 2,
+  dates: {
+    started: '',
+    due: ''
+  }
 });
 
 EventAggregator.publish('createProject', {
   title: 'Work',
   description: 'Tasks that need to be completed for your job.',
-  priority: 1,
-  dueDate: new Date(2022, 1, 7)
+  priority: 0,
+  dates: {
+    started: '',
+    due: new Date(2021, 4, 20)
+  } 
 });
 
 EventAggregator.publish('createProject', {
   title: 'House',
   description: 'A list of household chores and duties.',
   priority: 1,
-  dueDate: new Date(2022, 6, 9)
+  dates: {
+    started: '',
+    due: ''
+  } 
 });
-
-Display.init();
