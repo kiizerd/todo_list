@@ -5,26 +5,50 @@ const Database = (function() {
   
   function addProject(project) {
     projects[project.title] = project;
-    console.log('project added', project);
   };
     
   EventAggregator.subscribe('projectCreated', projectObj => {
     addProject(projectObj);
   });
 
+  // options = {
+  //   filter: {
+  //     byName: '', // projectName - will return projects with title matching string
+  //     byPriority: '', // 0 1 or 2 - will return projects with matching priority 
+  //     byDateDue: '',
+  //     byDateStarted: ''
+  //   },
+  //   sort: {
+  //     byName: '', // 0 or 1
+  //     byPriority: '', // for asc
+  //     byDateDue: '', // or desc
+  //     byDateStarted: ''    
+  //   }
+  // }
+
   function filterProjects(options, ary) {
-    
-  }
+    console.log(options);
+    let result;
+    if (options) {
+      if (options.byName) {
+        result = ary.filter(project => project.title === options.byName);
+      }
+    }
+    else return ary
+    return result
+  };
 
   function sortProjects(options, ary) {
     
+    return ary
   };
 
   EventAggregator.subscribe('requestProjects', options => {
-    let requestedProjects = Object.values(projects);
-    if (options.filter) filterProjects(options.filter, requestedProjects);
-    if (options.sort) sortProjects(options.sort, requestedProjects);
-    EventAggregator.publish('projectsReceipt', requestedProjects);
+    const reqProjects = Object.values(projects);
+    const filteredProjects = filterProjects(options.filter, reqProjects);
+    const sortedProjects = sortProjects(options.sort, filteredProjects);
+    if (options._token) sortedProjects._token = options._token;
+    EventAggregator.publish('projectsReceipt', sortedProjects);
   });
 
 
