@@ -2,7 +2,7 @@ const Generator = (function() {
   
   function createCard() {
     const card = document.createElement('div');
-    card.classList.add('card');
+    card.classList.add('ui', 'inverted', 'card', 'stackable');
 
     const cardFirstContent = getCardFirstContent();
     card.firstContent = cardFirstContent;
@@ -53,7 +53,7 @@ const Generator = (function() {
 
   function createModal() {
     const modal = document.createElement('div');
-    modal.classList.add('ui', 'inverted', 'modal', 'small');
+    modal.classList.add('ui', 'inverted', 'modal');
 
     const modalHeader = modal.header = getModalHeader();    
 
@@ -150,7 +150,7 @@ const Generator = (function() {
 
     function getTitleField() {
       const field = document.createElement('div');
-      field.classList.add('seven', 'wide', 'field', 'required');
+      field.classList.add('field');
 
       const label = document.createElement('label');
       label.textContent = 'Title';
@@ -165,7 +165,7 @@ const Generator = (function() {
 
     function getDescField() {
       const field = document.createElement('div');
-      field.classList.add('seven', 'wide', 'field');
+      field.classList.add('field');
 
       const label = document.createElement('label');
       label.textContent = 'Description';
@@ -180,7 +180,7 @@ const Generator = (function() {
 
     function getPriorityField() {
       const field = document.createElement('div');
-      field.classList.add('seven', 'wide', 'field');
+      field.classList.add('field');
 
       const label = document.createElement('label');
       label.textContent = 'Priority';
