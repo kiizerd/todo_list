@@ -1,55 +1,70 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- You MUST include jQuery before Fomantic -->
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="../semantic/dist/semantic.min.css">
-    <script src="../semantic/dist/semantic.min.js"></script>
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="stylesheet" href="../styles/styles.css">
-    <title>Todo-List</title>
-  </head>
-  <body>
-    <div class="ui fixed inverted menu">
-      <div class="ui container fluid" id="header">
-          <div class="header item" href="#">
-            <img class="logo" src="../media/todo-list_icon_white.png">
-            Todo-List
+  <!-- You MUST include jQuery before Fomantic -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="../semantic/dist/semantic.min.css">
+  <script src="../semantic/dist/semantic.min.js"></script>
+
+  <link rel="stylesheet" href="../styles/styles.css">
+  <link rel="icon" type="img/png" href="../media/todo_list_webpage_icon.png">
+  <title>Todo-List</title>
+</head>
+
+<body>
+
+  <div class="ui fixed inverted menu">
+    <div class="ui container fluid" id="header">
+      <div class="header item" href="#">
+        <img class="logo" src="../media/todo-list_icon_white.png">
+        Todo-List
+      </div>
+      <a class="item" href="#" data-tag="home">Home</a>
+      <div class="ui simple dropdown inverted item">
+        Projects
+        <i class="dropdown icon"></i>
+        <div class="menu">
+          <div id="header-projects-menu">
           </div>
-          <a class="item" href="#" data-tag="home">Home</a>
-          <div class="ui simple dropdown inverted item">
-            Projects
-            <i class="dropdown icon"></i>
-            <div class="menu">
-              <div id="header-projects-menu">
-              </div>
-              <div class="divider"></div>
-              <div class="item" id="header-new-project-btn">
-                <i class="plus square outline icon"></i>
-                <span class="new-project-btn" href="#" >New Project</span>
-              </div>  
-            </div>
-          </div>
-          <div class="right menu">
-            <a class="item" href="#" data-tag="history">History</a>            
-            <a class="item" href="#" data-tag="user">User</a>
+          <div class="divider"></div>
+          <div class="item" id="header-new-project-btn">
+            <i class="plus square outline icon"></i>
+            <span class="new-project-btn" href="#">New Project</span>
           </div>
         </div>
-    </div>
-
-    <div id="content" class="ui main container">
-    </div>
-
-    <div class="ui inverted vertical footer segment">
-      <div class="ui centre aligned container">
-        Kiizerd
+      </div>
+      <div class="right menu">
+        <a class="item" href="#" data-tag="history">History</a>
+        <a class="item" href="#" data-tag="user">User</a>
       </div>
     </div>
+  </div>
 
-    <script src="main.js"></script>
-  </body>
+  <div id="content" class="ui main container">
+  </div>
+
+  <div class="ui inverted vertical footer segment" id="footer">
+      <div class="ui left internal rail">
+        <a href='https://github.com/kiizerd' style="color: white;">
+          <i class="icon github"></i>
+          kiizerd
+        </a>
+      </div>
+      <div class="ui right internal rail">
+        <div>
+          Copyright
+          <i class="copyright outline icon"></i>
+          2021
+        </div>
+      </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+
 </html>
