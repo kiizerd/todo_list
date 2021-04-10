@@ -1,44 +1,45 @@
-import { EventAggregator } from '../events';
+import { EventAggregator, Token } from '../events';
 
 const ProjectController = (function() {
 
-  function findProject(name) {
-    EventAggregator.publish('requestProjects', {})
+  let primedProject;
+  const requestToken = new Token('requestProjects', 'projectController');
+  EventAggregator.subscribe('primeProject', projectName => {   
+    primedProject = projectName;
+    const reqOptions = {
+      filter: {
+        byName: primedProject
+      },
+      _token: requestToken
+    };
 
-    EventAggregator.subscribe('projectsReceipt', projects => {
-      for (let i = 0; i < projects.length; i++) {
-        if (name === projects[i].title) return projects[i]
-      }
-      return new Error('Project not found');
-    });
-  };
+    EventAggregator.publish('requestProjects', reqOptions);
+  });
 
+  
+  EventAggregator.subscribe('projectsReceipt', projects => {
+    if (projects._token && projects._token._id === requestToken._id) {
+      primedProject = projects[0];
+      console.log(primedProject);
+    } else { return false }
+  });
 
+  
   EventAggregator.subscribe('createProject', formData => {
     EventAggregator.publish('formToProject', formData);
-  });
-  
-
-  let primedProject;
-  EventAggregator.subscribe('primeProject', projectName => {
-    primedProject = findProject(projectName);
   });
 
 
   EventAggregator.subscribe('createTask', formData => {
     EventAggregator.publish('formToTask', formData);
   });
+  
 
-  let newTask;
-  EventAggregator.subscribe('taskFromForm', taskObj => {
-    newTask = taskObj;
-    primedProject.addTask(newTask);
-    EventAggregator.publish('taskCreated', [newTask, primedProject.title]);
+  EventAggregator.subscribe('taskCreated', taskObj => {
+    primedProject.addTask(taskObj);
   });
 
 
-
-  
 })()
 
 export { ProjectController }
