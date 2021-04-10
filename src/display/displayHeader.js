@@ -31,7 +31,6 @@ const Display = (function() {
 
     for (const link of headerLinks) {
       link.tag = link.textContent.toLowerCase();
-      console.log(link.tag);
       link.onclick = e => { linkClickEvent(e) };
     }
   }
