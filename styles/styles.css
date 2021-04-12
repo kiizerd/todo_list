@@ -1,14 +1,23 @@
 @import './newProjectModal.css';
 @import './homePage.css';
-
-html {
-	scrollbar-color: #666 slategray;
-}
+@import './projectPage.css';
 
 html, body {
+  scrollbar-color: #666 slategray;
+  scrollbar-width: thin;
+  font-family: 'Sen', sans-serif;
   height: 100%;
   max-width: 100%;
   overflow-x: hidden;
+}
+
+html::-webkit-scrollbar, body::-webkit-scrollbar {  
+  width: 6px;
+  background-color: slategrey;
+}
+
+body::-webkit-scrollbar-thumb {
+  background: #666;
 }
 
 body {
@@ -20,6 +29,10 @@ body {
 
 #content {
   flex: 1 0 auto;
+}
+
+.header {  
+  font-family: 'Sen', sans-serif;
 }
 
 .ui.menu .item {
