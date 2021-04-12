@@ -1,8 +1,10 @@
+import { Project } from "./display/displayProject";
+
 const Generator = (function() {
   
-  function createCard() {
+  function createProjectCard() {
     const card = document.createElement('div');
-    card.classList.add('ui', 'inverted', 'card', 'stackable');
+    card.classList.add('ui', 'inverted', 'card');
 
     const cardFirstContent = getCardFirstContent();
     card.firstContent = cardFirstContent;
@@ -12,7 +14,7 @@ const Generator = (function() {
       cardContent.classList.add('content');
       
       const cardHeader = getCardHeader();
-      card.header = cardHeader;
+      card.header = cardHeader.span;
 
       const cardMeta = getCardMeta();
       card.meta = cardMeta;
@@ -25,31 +27,99 @@ const Generator = (function() {
       return cardContent
       
       function getCardHeader() {
-        const header = document.createElement('h5');
+        const header = document.createElement('div');
         header.classList.add('header');
+
+        const span = document.createElement('span');
+        const buttons = createHeaderBtns();
+        const divider = getCardHeaderDivider();
+        header.span = span;
+
+        header.append(span, buttons, divider);
         
         return header
-      }
+
+        function getCardHeaderDivider() {
+          const divider = document.createElement('div');
+          divider.classList.add('ui', 'inverted', 'right', 'aligned', 'divider')
+                                'fitted';
+
+          return divider
+        };
+      };
 
       function getCardMeta() {
         const meta = document.createElement('div');
         meta.classList.add('meta');
 
         return meta
-      }
+      };
       
       function getCardDesc() {
         const desc = document.createElement('div');
         desc.classList.add('description');
         
         return desc
-      }
+      };
     }
 
     card.append(cardFirstContent);
 
     return card
-  }
+  };
+
+  function createHeaderBtns() {
+    const btnGroup = document.createElement('div');
+    btnGroup.classList.add('ui', 'icon', 'buttons', 'right', 'floated');
+    
+    const completeBtn = getCompleteBtn()
+    const editBtn = getEditBtn();
+    const deleteBtn = getDeleteBtn();
+    
+    btnGroup.append(completeBtn, editBtn, deleteBtn);
+
+    return btnGroup
+
+    function getCompleteBtn() {
+      const completeBtn = document.createElement('button');
+      completeBtn.classList.add('mini', 'ui', 'button', 'green',
+                                'cardHeader-completeBtn', 'inverted');
+      
+      const completeIcon = document.createElement('i');
+      completeIcon.classList.add('check', 'square', 'icon');
+  
+      completeBtn.append(completeIcon);
+
+      return completeBtn
+    };
+
+    function getEditBtn() {
+      const editBtn = document.createElement('button');
+      editBtn.classList.add('mini', 'ui', 'button', 'blue',
+                            'cardHeader-editBtn', 'inverted');
+
+      const editIcon = document.createElement('i');
+      editIcon.classList.add('edit', 'icon');
+
+      editBtn.append(editIcon);
+
+      return editBtn
+    };
+
+    function getDeleteBtn() {
+      const deleteBtn = document.createElement('button');
+      deleteBtn.classList.add('mini', 'ui', 'button', 'red',
+                              'cardHeader-deleteBtn', 'inverted');
+
+      const deleteIcon = document.createElement('i');
+      deleteIcon.classList.add('trash', 'alternate', 'outline', 'icon');
+
+      deleteBtn.append(deleteIcon);
+
+      return deleteBtn
+    };
+
+  };
 
   function createModal() {
     const modal = document.createElement('div');
@@ -92,7 +162,7 @@ const Generator = (function() {
 
       function getCancelBtn() {
         const cancelBtn = document.createElement('div');
-        cancelBtn.classList.add('ui', 'black', 'right', 'labeled',
+        cancelBtn.classList.add('ui', 'red', 'inverted', 'right', 'labeled',
                                 'icon', 'deny', 'button');
 
         cancelBtn.textContent = 'Cancel';
@@ -145,6 +215,8 @@ const Generator = (function() {
     datesSegment.append(datesField);
 
     form.append(titleSegment, prioritySegment, descSegment, datesSegment);
+
+    form.addResetBtn = addResetBtn;
 
     return form
 
@@ -389,6 +461,21 @@ const Generator = (function() {
 
     };
 
+    function addResetBtn() {
+      const resetBtn = document.createElement('div');
+      resetBtn.classList.add('ui', 'left', 'floated', 'right', 'labeled', 'icon', 'button');
+      resetBtn.textContent = 'Reset';
+
+      resetBtn.onclick = () => { this.reset() };
+      
+      const icon = document.createElement('i');
+      icon.classList.add('undo', 'icon');
+
+      resetBtn.append(icon);
+
+      this.parentElement.parentElement.actions.append(resetBtn);
+    };
+
   };
 
   function createSegment() {
@@ -398,7 +485,197 @@ const Generator = (function() {
     return segment
   };
 
-  return { createCard, createModal, createForm }
+  function createProjectPage() {
+    const page = document.createElement('div');
+    page.classList.add('ui', 'container');
+    page.id = 'project-page-container';
+    page.style.maxWidth = '750px';
+
+    const segment = getProjectPageSegment();
+    page.segment = segment;
+
+    page.append(segment);
+
+    return page
+
+    function getProjectPageSegment() {
+      const segment = createSegment();
+      segment.classList.remove('grey');
+      segment.classList.add('vertically', 'divided', 'grid');
+
+      const segHeader = getProjectHeader();
+      segment.heading = segHeader.heading;
+
+      const segDetails = getProjectDetails();
+      const segDescription = getProjectDesc();
+      const segTasks = getProjectTasks();
+
+      segment.append(segHeader, segDetails, segDescription, segTasks);
+
+      return segment
+
+      function getProjectHeader() {
+        const header = document.createElement('div');
+        header.classList.add('ui', 'row');
+
+        const titleColumn = getHeaderTitleColumn();
+        header.heading = titleColumn.heading;
+
+        const btnsColumn = getHeaderBtnColumn();
+        
+        header.append(titleColumn, btnsColumn);
+
+        return header
+        
+        function getHeaderTitleColumn() {
+          const column = document.createElement('div') ;
+          column.classList.add('eight', 'wide', 'column');
+
+          const heading = document.createElement('h2');
+          heading.classList.add('header');
+          heading.id = 'project-page-title';
+
+          column.heading = heading;
+
+          column.append(heading);
+
+          return column
+        }
+
+        function getHeaderBtnColumn() {
+          const btnsColumn = document.createElement('div');
+          btnsColumn.classList.add('eight', 'wide', 'column');
+  
+          const headerBtns = createHeaderBtns();
+          for (const btn of headerBtns.children) {
+            btn.classList.remove('mini');
+          }
+  
+          btnsColumn.append(headerBtns);
+
+          return btnsColumn
+        };
+
+      };
+
+      function getProjectDetails() {
+        const details = document.createElement('div');
+        details.classList.add('ui', 'two', 'column', 'row');
+
+        const priority = getPriorityColumn();
+        const dates = getDatesColumn();
+
+        details.append(priority, dates);
+
+        return details
+
+        function getPriorityColumn() {
+          const column = document.createElement('div');
+          column.classList.add('compact', 'left', 'floated', 'column');
+
+          const prioritySegment = getPrioritySegment();
+
+          column.append(prioritySegment);
+
+          return column
+
+          function getPrioritySegment() {
+            const prioritySegment = createSegment();
+            prioritySegment.classList.add('compact');
+
+            const text = document.createElement('span');
+            text.textContent = 'Priority: ';
+            text.classList.add('black');
+
+            const priority = document.createElement('span');
+            text.classList.add('ui', 'text');
+
+            segment.priority = priority;            
+
+            prioritySegment.append(text, priority);
+
+            return prioritySegment
+          };
+        };
+
+        function getDatesColumn() {
+          const column = document.createElement('div');
+          column.classList.add('compact', 'right', 'floated', 'column');
+          column.style.display = 'flex';
+          column.style.justifyContent = 'flex-end';
+
+          const datesSegment = createSegment();
+
+          segment.dates = datesSegment;
+
+          column.append(datesSegment);
+
+          return column
+        };
+
+      };
+
+      function getProjectDesc() {
+        const desc = document.createElement('div');
+        desc.classList.add('ui', 'centered',  'row');
+
+        const column = document.createElement('div');
+        column.classList.add('column');
+
+        const descSegment = createSegment();
+
+        const span = document.createElement('span');
+        span.classList.add('black', 'ui', 'text');
+
+        segment.desc = span;
+
+        descSegment.append(span);
+
+        column.append(descSegment);
+
+        desc.append(column);
+
+        return desc
+      };
+
+      function getProjectTasks() {
+        const tasks = document.createElement('div');
+        tasks.classList.add('ui', 'centered', 'row');
+
+        const column = document.createElement('div');
+        column.classList.add('column');
+
+        const tasksSegment = createSegment();
+        tasksSegment.id = 'project-page-tasks-segment';
+
+        segment.tasks = tasksSegment;
+
+        column.append(tasksSegment);
+
+        tasks.append(column);
+
+        return tasks
+      };
+
+    };
+
+  };
+
+  function createTaskCard() {
+    const card = createProjectCard()
+
+    return card;
+  };
+
+  return {
+    createProjectCard,
+    createProjectPage,
+    createTaskCard,
+    createSegment,
+    createModal,
+    createForm,
+  }
+
 })();
 
 export { Generator }
