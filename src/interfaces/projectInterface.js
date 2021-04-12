@@ -11,10 +11,7 @@ const projectInterface = (function() {
       
       const dueDate = formData.dates.due;
       const startDate = formData.dates.started;
-
-      console.log('project due date --', dueDate);
-      console.log('project start date --', startDate);
-
+      
       this.dates = {
         due: dueDate ? format(new Date(dueDate), 'PP') : null,
         started: startDate ? format(new Date(startDate), 'PP') : format(new Date(), 'PP')

@@ -12,9 +12,6 @@ const taskInterface = (function() {
       const dueDate = formData.dates.due;
       const startDate = formData.dates.started;
 
-      console.log('task due date --', dueDate);
-      console.log('task start date --', startDate);
-      
       this.dates = {
         due: dueDate ? format(new Date(dueDate), 'PP') : null,
         started: startDate ? format(new Date(startDate), 'PP') : format(new Date(), 'PP')
