@@ -5,7 +5,7 @@ const Display = (function() {
 
   function getHomePage() {
     const homepage = document.createElement('div');
-    homepage.classList.add('container');
+    homepage.classList.add('ui', 'container');
     homepage.id = 'homepage';
     
     const div = getProjectsContainer();
@@ -85,7 +85,7 @@ const Display = (function() {
   }
 
   function createProjectCard(project) {
-    const card = Generator.createCard();
+    const card = Generator.createProjectCard();
     card.classList.add('homepage-project-card');
     fillCard(card, project);
 
@@ -94,10 +94,16 @@ const Display = (function() {
 
   function fillCard(card, project) {
     card.header.textContent = project.title;
+    card.header.onclick = () => {
+      const content = document.getElementById('content');
+      content.setActivePage(project.title);
+    };
+    
+    card.header.classList.add('project-card-title')
 
     card.desc.textContent = project.description;
     
-    card.meta.append(getCardPriority())
+    card.meta.append(getCardPriority());
 
     card.dates = getCardDatesContent();    
     
@@ -136,8 +142,7 @@ const Display = (function() {
 
       const dates = project.dates;
 
-      const div = document.createElement('div');
-      div.classList.add('ui', 'grey', 'inverted', 'segment');
+      const div = Generator.createSegment();
 
       const dateStarted = document.createElement('p');
       dateStarted.textContent = 'Started on: ' + dates.started;
@@ -145,7 +150,8 @@ const Display = (function() {
       const dueDate = document.createElement('p');
       dueDate.textContent = 'Due by: ' + dates.due;
 
-      div.append(dateStarted, dueDate);
+      if (dates.started) div.append(dateStarted);
+      if (dates.due) div.append(dueDate);
 
       datesContent.append(div)
 
@@ -176,8 +182,10 @@ const Display = (function() {
     
     function getTaskList() {
       const list = document.createElement('div');
-      list.classList.add('ui', 'inverted', 'relaxed', 'divided', 'list');
-      list.id = project.title + 'project-card-task-list';
+      list.id = project.title + '-project-card-task-list'; 
+      list.classList.add('ui', 'inverted', 'relaxed', 'divided', 'list',
+                         'project-card-task-list');
+
 
       for (const task of project.tasks) {
         const item = getListItem(task);
@@ -225,8 +233,8 @@ const Display = (function() {
     
     function getAddTaskBtn() {
       const btn = document.createElement('button');
-      btn.classList.add('circular', 'ui' ,'icon', 'button');
-      btn.classList.add('project-card-add-task-btn', 'add-task-btn');
+      btn.classList.add('circular', 'ui' ,'icon', 'green', 'button');
+      btn.classList.add('inverted', 'add-task-btn');
 
       btn.onclick = () => {
         EventAggregator.publish('primeProject', project.title);
