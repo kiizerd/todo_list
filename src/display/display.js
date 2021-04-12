@@ -4,7 +4,7 @@ import { getHomePage } from './displayHome';
 import { Project } from './displayProject';
 
 const Display = (function() {
-  Project; // temp module call to make sure displayProject is run
+  // Project; // temp module call to make sure displayProject is run
   
   const content = document.getElementById('content');
 
@@ -18,9 +18,9 @@ const Display = (function() {
     let page = getPage(pageName);
     content.innerHTML = '';
     content.append(page());
+    content.activePage = page;
+    
     window.scrollTo(0, 0);
-
-    console.log('going to page -->>', pageName);
   }
 
   function getPage(name) {
@@ -33,9 +33,11 @@ const Display = (function() {
   }
 
   function selectProjectPage(projectName) {
-    // Project.getProjectPageAsClosure(projectName);
-    return (projectName) => { console.log('Project clicked:', projectName) };
-  }
+    function pageClosure() {
+      return Project.getProjectPage(projectName)
+    };
+    return pageClosure 
+  };
 
   function getTaskCard(task) {}
 
