@@ -5,3 +5,40 @@
 #homepage-new-project-btn {
   margin: 1em;
 }
+
+.homepage-project-card .inverted.segment {
+  font-size: 12px;
+}
+
+.project-card-task-list {
+  max-height: 160px;
+  overflow-y: auto;
+	scrollbar-color: #1b1c1d #767676;
+  scrollbar-width: thin;
+}
+
+.project-card-task-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+#projects-container .project-card-task-list::-webkit-scrollbar-track {
+  background-color: #767676;
+}
+
+
+#projects-container .project-card-task-list::-webkit-scrollbar-thumb {
+  height: 8px;
+  background: #1b1c1d;
+}
+
+.project-card-title {
+  cursor: pointer;
+}
+
+.project-card-title:hover {
+  color: #bbb;
+}
+
+.project-card-title {
+  font-family: 'Sen', sans-serif;
+}

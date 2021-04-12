@@ -1,0 +1,42 @@
+body {
+  overflow-y: hidden;
+}
+#project-page-container {
+  padding-top: 4rem;
+  max-width: 750px;
+}
+
+#project-page-container .row {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+#project-page-container .horizontal.segments {
+  margin: 0;
+}
+
+#project-page-tasks-segment {
+  max-height: 500px;
+  overflow-y: auto;
+	scrollbar-color: slategrey #767676;
+  scrollbar-width: thin;
+}
+
+#project-page-tasks-segment::-webkit-scrollbar {
+  width: 7px;
+}
+
+#project-page-tasks-segment::-webkit-scrollbar-track {
+  background-color: #767676;
+}
+
+#project-page-tasks-segment::-webkit-scrollbar-thumb {
+  background: slategrey;
+  height: 8px;
+}
+
+#project-page-tasks-segment .column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
