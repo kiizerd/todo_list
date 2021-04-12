@@ -30,7 +30,11 @@ const Display = (function() {
     const headerLinks = Array.from(document.querySelectorAll('#header a'));
 
     for (const link of headerLinks) {
-      link.tag = link.textContent.toLowerCase();
+      if (link.textContent === 'Home' || link.textContent === 'History') {
+        link.tag = link.textContent.toLowerCase();
+      } else {
+        link.tag = link.textContent;
+      }
       link.onclick = e => { linkClickEvent(e) };
     }
   }
