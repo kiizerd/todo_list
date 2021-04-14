@@ -1,4 +1,4 @@
-import { Project } from "./display/displayProject";
+import { EventAggregator } from "./events";
 
 const Generator = (function() {
   
@@ -15,6 +15,7 @@ const Generator = (function() {
       
       const cardHeader = getCardHeader();
       card.header = cardHeader.span;
+      card.buttons = cardHeader.buttons;
 
       const cardMeta = getCardMeta();
       card.meta = cardMeta;
@@ -34,6 +35,7 @@ const Generator = (function() {
         const buttons = createHeaderBtns();
         const divider = getCardHeaderDivider();
         header.span = span;
+        header.buttons = buttons;
 
         header.append(span, buttons, divider);
         
@@ -87,6 +89,10 @@ const Generator = (function() {
       
       const completeIcon = document.createElement('i');
       completeIcon.classList.add('check', 'square', 'icon');
+
+      completeBtn.addEventListener('click', () => {
+
+      });
   
       completeBtn.append(completeIcon);
 
@@ -101,6 +107,10 @@ const Generator = (function() {
       const editIcon = document.createElement('i');
       editIcon.classList.add('edit', 'icon');
 
+      editBtn.addEventListener('click', () => {
+
+      });
+
       editBtn.append(editIcon);
 
       return editBtn
@@ -114,6 +124,31 @@ const Generator = (function() {
       const deleteIcon = document.createElement('i');
       deleteIcon.classList.add('trash', 'alternate', 'outline', 'icon');
 
+      deleteBtn.addEventListener('click', () => {
+        let undo = false;
+        $('body')
+          .toast({
+            position: 'top center',
+            showProgress: 'bottom',
+            displayTime: 3000,
+            message: 'Deleting ' + deleteBtn.masterObject.header.textContent + '...',
+            class: 'red inverted',
+            classActions: 'basic left',
+            actions: [{
+              text: 'Undo?',
+              class: 'ui right labeled icon button black inverted',
+              icon: 'undo',
+              click: function() { undo = true; }
+            }],
+            onHide: () => {
+              if (!undo) {
+                deleteBtn.masterObject.deleteSelf();
+              };
+            }
+          })
+        ;
+      });
+        
       deleteBtn.append(deleteIcon);
 
       return deleteBtn
