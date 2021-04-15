@@ -18,9 +18,9 @@ const ProjectController = (function() {
 
   
   EventAggregator.subscribe('projectsReceipt', projects => {
-    if (projects._token && projects._token._id === requestToken._id) {
+    if (projects._token && (projects._token._id === requestToken._id)) {
       primedProject = projects[0];
-      console.log(primedProject);
+      console.log('Primed project --> ', primedProject);
     } else { return false }
   });
 
@@ -30,13 +30,20 @@ const ProjectController = (function() {
   });
 
 
+  const taskToken = new Token('formToTask', 'projectController');
+
   EventAggregator.subscribe('createTask', formData => {
+    formData._token = taskToken;
     EventAggregator.publish('formToTask', formData);
   });
   
 
   EventAggregator.subscribe('taskCreated', taskObj => {
-    primedProject.addTask(taskObj);
+    if (taskObj._token && (taskObj._token._id === taskToken._id)) {
+      primedProject.addTask(taskObj);
+
+      delete taskObj._token
+    };
   });
 
 
