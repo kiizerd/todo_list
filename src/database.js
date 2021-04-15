@@ -1,15 +1,175 @@
 import { EventAggregator } from './events'
 
 const Database = (function() {
-  const projects = {}
-  
-  function addProject(project) {
-    projects[project.title] = project;
+
+
+  const projects = {};
+
+  const completedProjects = {};
+
+  function initStorage() {
+    if (checkForStorage()) {
+      loadStorage();
+    } else {
+      setupStorage();
+    };
   };
+
+  function checkForStorage() {
+    return (window.localStorage.getItem('StorageObject') != null);
+  };
+
+  function getStoredProjects() {
+    const localStorage = JSON.parse(window.localStorage.getItem('StorageObject'));
     
-  EventAggregator.subscribe('projectCreated', projectObj => {
-    addProject(projectObj);
+    const projects = localStorage.projects
+
+    return projects
+  };
+
+  function loadStorage() {
+    const storedProjects = getStoredProjects();
+    if (Object.entries(storedProjects).length) {
+      for (const project in storedProjects) {
+        const current = storedProjects[project];     
+        
+        if (current.tasks.length) {
+          const newTaskList = current.tasks.map(task => {
+            EventAggregator.subscribe('taskFromStorage', newTask => {
+              task = newTask;
+            });
+            
+            EventAggregator.publish('storedTaskToTask', task);
+            
+            return task
+          });
+
+          current.tasks = newTaskList
+        };
+
+        EventAggregator.subscribe('projectFromStorage', projectObj => {
+          projects[projectObj.title] = projectObj;
+        });
+
+        EventAggregator.publish('storedProjectToProject', current);
+
+      };
+    };
+    
+  };
+  
+  function setupStorage() {
+    window.localStorage.setItem('StorageObject', JSON.stringify({
+      'projects': {}
+    }));
+  };
+
+  function checkStorageFor(projectName) {
+    const stored = getStoredProjects();
+    const storedAry = Object.entries(stored);
+    
+    let check = true;
+    for (const project of storedAry) {
+      if (project.title === projectName) check = false
+    }
+
+    return check
+  };
+
+  function updateStorage() {
+    setTimeout(() => {
+      window.localStorage.setItem('StorageObject', JSON.stringify({
+        'projects': projects
+      }));
+    }, 500);
+  };
+
+  function storeProject(newProject) {
+    const stored = getStoredProjects();
+    
+    if (checkStorageFor(newProject.title)) {
+      stored[newProject.title] = newProject;
+      console.log('storing new project');
+      
+      window.localStorage.setItem('StorageObject', JSON.stringify({
+        projects: stored
+      }));
+    };
+
+  };
+  
+  EventAggregator.subscribe('projectCreated', projectObj => {    
+    projects[projectObj.title] = projectObj;
+    updateStorage();
   });
+
+  
+  EventAggregator.subscribe('taskCreated', taskObj => {
+    updateStorage();
+  });
+
+
+  // function completeStoredProject() {
+
+  // };
+
+  // function completeProject(project) {
+  //   completedProjects[project.title] = project;
+
+  //   project.active = false;
+  //   project.completed = true;
+
+  //   deleteProject(project.title);
+  // };
+
+  // EventAggregator.subscribe('projectCompleted', completedProject => {
+  //   completeProject(project);
+  // });
+
+  // function updateStoredProject(projectName, updatedProject) {
+  //   const stored = getStoredProjects();
+
+  //   if (!checkStorageFor(projectName)) {
+  //     if (projectName === updatedProject.title) {
+  //       stored[projectName] = updatedProject;
+  //     } else {
+  //       delete stored[projectName];
+  //       stored[updatedProject.title] = updatedProject;
+  //     };
+  //   };
+
+  //   window.localStorage.setItem('StorageObject', JSON.stringify({
+  //     projects: stored
+  //   }));
+
+  // };
+
+
+  // function updateProject(projectName, updatedProject) {
+  //   if (projectName === updatedProject.title) {
+  //     projects[projectName] = updatedProject;
+  //   } else {
+  //     delete projects[projectName];
+  //     projects[updatedProject.title] = updatedProject;
+  //   };
+  // };
+
+  // EventAggregator.subscribe('projectUpdated', (projectName, updatedProject) => {
+  //   updateStoredProject(projectName, updatedProject);
+  //   updateProject(projectName, updatedProject);
+  // });
+
+  
+  EventAggregator.subscribe('projectDeleted', projectName => {
+    delete projects[projectName];
+    updateStorage();
+  });
+
+
+  EventAggregator.subscribe('taskDeleted', taskName => {
+    updateStorage();
+  });
+
 
   // options = {
   //   filter: {
@@ -27,7 +187,7 @@ const Database = (function() {
   // }
 
   function filterProjects(options, ary) {
-    console.log(options);
+    console.log('filter options', options);
     let result;
     if (options) {
       if (options.byName) {
@@ -47,24 +207,14 @@ const Database = (function() {
     const reqProjects = Object.values(projects);
     const filteredProjects = filterProjects(options.filter, reqProjects);
     const sortedProjects = sortProjects(options.sort, filteredProjects);
+
     if (options._token) sortedProjects._token = options._token;
+
     EventAggregator.publish('projectsReceipt', sortedProjects);
   });
-
-
-  function editProject(project, updatedProps) {
-    for (const prop in project) {
-      if (Object.keys(updatedProps).includes(prop)) {
-        project[prop] = updatedProps[prop];
-      };
-    };
-  };
-
-  function deleteProject(projectName) {
-    delete projects[projectName];
-  };
   
-  return {}
-})()
+  return { initStorage }
+
+})();
 
 export { Database }
