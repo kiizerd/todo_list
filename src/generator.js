@@ -31,13 +31,13 @@ const Generator = (function() {
         const header = document.createElement('div');
         header.classList.add('header');
 
-        const span = document.createElement('span');
         const buttons = createHeaderBtns();
+        const span = document.createElement('span');
         const divider = getCardHeaderDivider();
         header.span = span;
         header.buttons = buttons;
 
-        header.append(span, buttons, divider);
+        header.append(buttons, span, divider);
         
         return header
 
