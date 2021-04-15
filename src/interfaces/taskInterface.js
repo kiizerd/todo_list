@@ -1,4 +1,4 @@
-import { EventAggregator } from '../events'
+import { EventAggregator, Token } from '../events'
 import { format } from 'date-fns'
 
 const taskInterface = (function() {
@@ -7,7 +7,7 @@ const taskInterface = (function() {
     constructor(formData) {
       this.title = formData.title;
       this.description = formData.description;
-      this.priority = parseInt(formData.priority);
+      this.priority = formData.priority ? parseInt(formData.priority) : 1;
 
       const dueDate = formData.dates.due;
       const startDate = formData.dates.started;
@@ -36,8 +36,17 @@ const taskInterface = (function() {
 
 
   EventAggregator.subscribe('formToTask', formData => {
-    let newTask = new Task(formData);
+    const newTask = new Task(formData);
+    if (formData._token) newTask._token = formData._token;
+
     EventAggregator.publish('taskCreated', newTask);
+  });
+
+  
+  EventAggregator.subscribe('storedTaskToTask', storedTask => {
+    const newTask = new Task(storedTask);
+
+    EventAggregator.publish('taskFromStorage', newTask);
   });
 
 })();
