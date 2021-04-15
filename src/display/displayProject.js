@@ -376,15 +376,33 @@ const Display = (function() {
           const formData = getNewFormData('project');
           console.log(formData)
           EventAggregator.publish('createProject', formData);
+          showToast();
+          ;
         };
 
       } else if (modal === 'task') {
         const taskConfirmBtn = document.querySelector('#new-task-modal .actions .positive');
         taskConfirmBtn.onclick = () => {
           const formData = getNewFormData('task');
-          EventAggregator.publish('createTask', formData);
+          EventAggregator.publish('createTask', formData);              
+          showToast();
         };
       };
+
+      function showToast() {        
+        const modalCapital = modal.charAt(0).toUpperCase() + modal.slice(1);
+        const toastColor = modal === 'task' ? 'teal' : 'green';
+        
+        $('body')
+        .toast({        
+          position: 'top center',
+          showProgress: 'bottom',
+          displayTime: 1600,
+          message: modalCapital + ' created...',
+          class: toastColor + ' inverted',
+        })
+        ;
+      }
 
     };
 
