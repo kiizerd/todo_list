@@ -99,7 +99,9 @@ const Display = (function() {
       content.setActivePage(project.title);
     };
     
-    card.header.classList.add('project-card-title')
+    card.header.classList.add('project-card-title');
+
+    getBtnClickEvents();
 
     card.desc.textContent = project.description;
     
@@ -110,7 +112,18 @@ const Display = (function() {
     card.tasks = getCardTasksContent(project);
 
     card.append(card.dates, card.tasks);
-      
+
+    function getBtnClickEvents() {
+      for (const btn of Array.from(card.buttons.children)) {
+        btn.masterObject = card;
+      }
+
+      card.deleteSelf = function() {
+        EventAggregator.publish('projectDeleted', project.title);
+        project.deleteProject();
+        card.remove();
+      }
+    }      
 
     function getCardPriority() {
       const priority = project.priority;
@@ -134,7 +147,7 @@ const Display = (function() {
       div.append(span)
 
       return div
-    }
+    };
 
     function getCardDatesContent() {
       const datesContent = document.createElement('div');
@@ -156,8 +169,8 @@ const Display = (function() {
       datesContent.append(div)
 
       return datesContent
-    }
-  }  
+    };
+  };
 
   function getCardTasksContent(project) {
     const tasksContent = document.createElement('div');
@@ -165,11 +178,9 @@ const Display = (function() {
 
     const tasksSegment = document.createElement('div');
     tasksSegment.classList.add('ui', 'grey', 'inverted', 'segment');
-    
-    const taskList = getTaskList();
-    const addTaskBtn = getAddTaskBtn();    
 
-    tasksSegment.append(taskList, addTaskBtn);
+    if (project.tasks.length) tasksSegment.append(getTaskList());
+    tasksSegment.append(getAddTaskBtn());
 
     EventAggregator.subscribe('taskCreated', newTask => {
       tasksSegment.innerHTML = ''
@@ -249,7 +260,7 @@ const Display = (function() {
       return btn
     };
 
-  }
+  };
 
   function getAddProjectBtn() {
     const btn = document.createElement('button');
@@ -261,7 +272,7 @@ const Display = (function() {
     btn.onclick = () => EventAggregator.publish('newProjectClicked', btn);
 
     return btn
-  }
+  };
   
   return { getHomePage }
 })()
