@@ -1,4 +1,4 @@
-import { EventAggregator } from '../events'
+import { EventAggregator, Token } from '../events'
 import { format } from 'date-fns'
 
 const projectInterface = (function() {
@@ -7,7 +7,7 @@ const projectInterface = (function() {
     constructor(formData) {
       this.title = formData.title;
       this.description = formData.description;
-      this.priority = parseInt(formData.priority);
+      this.priority = formData.priority ? parseInt(formData.priority) : 1;
       
       const dueDate = formData.dates.due;
       const startDate = formData.dates.started;
@@ -17,10 +17,10 @@ const projectInterface = (function() {
         started: startDate ? format(new Date(startDate), 'PP') : format(new Date(), 'PP')
       };
 
-      this.tasks = [];
+      this.tasks = formData.tasks ? formData.tasks : [];
       this.completed = false;
       this.active = true;
-    }
+    };
 
     getTask(taskName) {
       for (const task of this.tasks) {
@@ -30,11 +30,11 @@ const projectInterface = (function() {
       };
 
       return new Error('Task not found');
-    }
+    };
 
     addTask(taskObj) {
       this.tasks.push(taskObj);
-    }
+    };
 
     completeTask(taskName) {
       const task = this.getTask(taskName);
@@ -45,7 +45,7 @@ const projectInterface = (function() {
       });
 
       task.completeTask();
-    }
+    };
 
     removeTask(taskName) {
       const task = this.getTask(taskName);
@@ -56,7 +56,8 @@ const projectInterface = (function() {
       this.task.splice(index, 1);
 
       EventAggregator.publish('taskDeleted', task);
-    }
+
+    };
 
     setProperties(newProps) {
       for (const prop in newProps) {
@@ -64,27 +65,43 @@ const projectInterface = (function() {
           this[prop] = newProps[prop];
         };
       };
-    }
+    };
 
     completeProject() {
       if (this.tasks.length === 0)
+      
         EventAggregator.publish('projectCompleted', this);
-    }
+
+    };
 
     deleteProject() {
       // delete all of the projects tasks 
       // database will remove project from listing
       this.tasks.length = 0;
       this.active = false;
+
       EventAggregator.publish('projectDeleted', this);
-    }
+
+    };
+
   };
 
+
   EventAggregator.subscribe('formToProject', formData => {
-    let newProject = new Project(formData);
+    const newProject = new Project(formData);
 
     EventAggregator.publish('projectCreated', newProject);
+
   });
+
+
+  EventAggregator.subscribe('storedProjectToProject', storedProject => {
+    const newProject = new Project(storedProject);
+
+    EventAggregator.publish('projectFromStorage', newProject);
+
+  });
+
 
 })();
 
