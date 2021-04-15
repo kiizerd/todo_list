@@ -263,15 +263,28 @@ const Display = (function() {
   };
 
   function getAddProjectBtn() {
-    const btn = document.createElement('button');
-    btn.classList.add('ui', 'secondary', 'button');
-    btn.classList.add('new-project-btn');
-    btn.id = 'homepage-new-project-btn';
-    btn.textContent = 'New Project';
+    const animBtn = document.createElement('div');
+    animBtn.classList.add('ui', 'animated', 'fade', 'button', 'secondary');
+    animBtn.classList.add('new-project-btn', 'right', 'floated');
+    animBtn.id = 'homepage-new-project-btn';
 
-    btn.onclick = () => EventAggregator.publish('newProjectClicked', btn);
+    const visibleBtn = document.createElement('div');
+    visibleBtn.classList.add('visible', 'content');
+    visibleBtn.textContent = 'New project';
 
-    return btn
+    const hiddenBtn = document.createElement('div');
+    hiddenBtn.classList.add('hidden', 'content');
+
+    const newProjectIcon = document.createElement('i');
+    newProjectIcon.classList.add('plus', 'square', 'outline', 'icon');
+
+    hiddenBtn.append(newProjectIcon);
+
+    animBtn.onclick = () => EventAggregator.publish('newProjectClicked', animBtn);
+
+    animBtn.append(visibleBtn, hiddenBtn);
+
+    return animBtn
   };
   
   return { getHomePage }
