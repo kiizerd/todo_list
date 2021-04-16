@@ -4,7 +4,6 @@ import { getHomePage } from './displayHome';
 import { Project } from './displayProject';
 
 const Display = (function() {
-  // Project; // temp module call to make sure displayProject is run
   
   const content = document.getElementById('content');
 
@@ -12,16 +11,18 @@ const Display = (function() {
     addProjectEvent()
     setActivePage('home');
     content.setActivePage = setActivePage
-  }
+  };
 
   function setActivePage(pageName) {
     let page = getPage(pageName);
+    page.pageName = pageName;
+
     content.innerHTML = '';
     content.append(page());
-    content.activePage = page;
+    content.activePage = pageName;
     
     window.scrollTo(0, 0);
-  }
+  };
 
   function getPage(name) {
     const pages = {
@@ -30,7 +31,7 @@ const Display = (function() {
     }
 
     return !pages[name] ? selectProjectPage(name) : pages[name];
-  }
+  };
 
   function selectProjectPage(projectName) {
     function pageClosure() {
@@ -39,7 +40,10 @@ const Display = (function() {
     return pageClosure 
   };
 
-  function getTaskCard(task) {}
+  
+  EventAggregator.subscribe('updateDisplay', () => {
+    setActivePage(content.activePage);
+  });
 
   function getHistoryPage() {}
 
