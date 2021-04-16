@@ -96,7 +96,7 @@ const Generator = (function() {
           .toast({
             position: 'top center',
             showProgress: 'bottom',
-            displayTime: 3000,
+            displayTime: 1600,
             message: 'Task complete!!',
             class: 'green inverted',
             classActions: 'basic left',
@@ -152,7 +152,7 @@ const Generator = (function() {
           .toast({
             position: 'top center',
             showProgress: 'bottom',
-            displayTime: 3000,
+            displayTime: 2000,
             message: 'Deleting ' + deleteBtn.masterObject.header.textContent + '...',
             class: 'red inverted',
             classActions: 'basic left',
@@ -603,11 +603,15 @@ const Generator = (function() {
         function getHeaderBtnColumn() {
           const btnsColumn = document.createElement('div');
           btnsColumn.classList.add('eight', 'wide', 'column');
+          btnsColumn.id = 'project-page-header-btns-column';
   
           const headerBtns = createHeaderBtns();
           for (const btn of headerBtns.children) {
             btn.classList.remove('mini');
           }
+
+
+          page.buttons = headerBtns;
   
           btnsColumn.append(headerBtns);
 
@@ -619,6 +623,7 @@ const Generator = (function() {
       function getProjectDetails() {
         const details = document.createElement('div');
         details.classList.add('ui', 'two', 'column', 'row');
+        details.id = 'project-page-details-row';
 
         const priority = getPriorityColumn();
         const dates = getDatesColumn();
@@ -641,16 +646,20 @@ const Generator = (function() {
             const prioritySegment = createSegment();
             prioritySegment.classList.add('compact');
 
+            const internalSegment = document.createElement('div');
+            internalSegment.classList.add('ui', 'inverted', 'segment');
+
             const text = document.createElement('span');
             text.textContent = 'Priority: ';
-            text.classList.add('black');
+            text.classList.add('ui', 'text');
 
             const priority = document.createElement('span');
-            text.classList.add('ui', 'text');
 
             segment.priority = priority;            
 
-            prioritySegment.append(text, priority);
+            internalSegment.append(text, priority);
+
+            prioritySegment.append(internalSegment);
 
             return prioritySegment
           };
@@ -682,12 +691,17 @@ const Generator = (function() {
 
         const descSegment = createSegment();
 
+        const internalSegment = document.createElement('div');
+        internalSegment.classList.add('ui', 'inverted', 'segment');
+
         const span = document.createElement('span');
-        span.classList.add('black', 'ui', 'text');
+        span.classList.add('ui', 'text');
 
         segment.desc = span;
 
-        descSegment.append(span);
+        internalSegment.append(span);
+
+        descSegment.append(internalSegment);
 
         column.append(descSegment);
 
