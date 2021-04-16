@@ -3,6 +3,19 @@ import { Generator } from '../generator';
 
 const Display = (function() {
 
+  // most editForm and editModal funcs can be combined 
+  // with newForm and newModal funcs
+  // maybe with abstracted functions and a context parameter
+  // getModal(context(new or edit), object(project or task)) {
+    // getForm(context(new or edit), object(project or task)) {
+      //onclickconfirm {
+        // getFormData
+      // }
+
+    // }
+
+  // }
+
   EventAggregator.subscribe('newProjectClicked', () => {
     let modal = document.getElementById('new-project-modal');
     if (!modal) {
@@ -137,13 +150,74 @@ const Display = (function() {
     showEditModal('project');
   });
 
+  EventAggregator.subscribe('editTaskClicked', args => {
+    let modal = document.getElementById('edit-task-modal');
+    if (!modal) {
+      modal = getEditTaskModal();
+      document.body.append(modal);
+    };
+
+    const taskName = args[0];
+    const projectName = args[1];    
+
+    const requestToken = new Token('requestProjects', 'displayProject');
+
+    const requestObj = {
+      filter: {
+        byName: projectName
+      },
+      _token: requestToken
+    };
+    
+    let project;
+    EventAggregator.subscribe('projectsReceipt', projectToEdit => {
+      if (projectToEdit._token && !(projectToEdit._token === requestToken)) return false
+      project = projectToEdit[0];
+    });
+
+    EventAggregator.publish('requestProjects', requestObj);
+
+    const task = project.getTask(taskName);
+
+    modal.form.task = task;
+    modal.form.fill(task);
+
+    showEditModal('task');
+  });
+
   
   function getEditTaskModal() {
+    const modal = Generator.createModal();
+    modal.id = 'edit-task-modal';
+    modal.classList.add('small');
 
+    modal.header.textContent = 'Edit Task';
+
+    const modalForm = getEditTaskForm();
+
+    modal.form = modalForm;
+
+    modal.content.append(modalForm);
+
+    return modal
   };
 
   function getEditTaskForm() {
-    
+    const form = Generator.createForm();
+    form.id = 'edit-task-form';
+    form.onsubmit = "return false";
+
+    form.fill = fill;
+
+    return form
+
+    function fill(task) {     
+      form.elements[0].value = task.title;
+      form.elements[1].value = task.priority;
+      form.elements[2].value = task.description;
+      form.elements[3].value = task.dates.started;
+      form.elements[5].value = task.dates.due;
+    }
   };
 
   function getEditProjectModal() {
@@ -232,10 +306,41 @@ const Display = (function() {
     function fillProject() {
       segment.heading.textContent = project.title;
 
+      getBtnClickEvents();
+
       fillPriority();
       fillDates();
       fillDescription();
       fillTasks();
+
+      function getBtnClickEvents() {
+        projectPage.header = segment.heading
+        for (const btn of Array.from(projectPage.buttons.children)) {
+          btn.masterObject = projectPage;
+        }
+
+        const content = document.getElementById('content');
+
+        projectPage.completeSelf = function() {
+          project.completeProject();
+          projectPage.remove();
+
+          content.setActivePage('home');
+        };
+
+        projectPage.editSelf = function() {
+
+          EventAggregator.publish('editProjectClicked', project.title);
+
+        };
+
+        projectPage.deleteSelf = function() {
+          project.deleteProject();
+          projectPage.remove();
+
+          content.setActivePage('home');
+        };
+      };
       
       function fillPriority() {
         const priority = project.priority;
@@ -251,12 +356,11 @@ const Display = (function() {
         const startDateSegment = getStartDateSegment();
         
         if (dates.due) {
-          const datesWrapper = Generator.createSegment();
+          const datesWrapper = document.createElement('div');
           const dueDateSegment = getDueDateSegment();
-          datesWrapper.classList.remove('segment')
-          datesWrapper.classList.add('horizontal', 'basic', 'segments', 'compact');
+          datesWrapper.classList.add('ui', 'horizontal', 'segments');
 
-          datesWrapper.append(startDateSegment, dueDateSegment)
+          datesWrapper.append(startDateSegment, dueDateSegment);
 
           segment.dates.append(datesWrapper);
         } else {
@@ -266,7 +370,7 @@ const Display = (function() {
         // combine these two functions
         function getStartDateSegment() {
           const segment = document.createElement('div');
-          segment.classList.add('segment', 'compact');
+          segment.classList.add('ui', 'inverted', 'segment');
           segment.classList.add('center', 'aligned');
 
           const span = document.createElement('span');
@@ -279,7 +383,8 @@ const Display = (function() {
 
         function getDueDateSegment() {
           const segment = document.createElement('div');
-          segment.classList.add('segment', 'compact');
+          segment.classList.add('ui', 'inverted', 'segment');
+          segment.classList.add('center', 'aligned');
 
           const span = document.createElement('span');
           span.textContent = 'Due by: ' + dates.due;
@@ -384,11 +489,35 @@ const Display = (function() {
 
       card.desc.textContent = task.description;
 
+      getBtnClickEvents();
+
       card.meta.append(getCardPriority());
 
       card.dates = getCardDatesContent();
 
       card.append(card.dates);
+      
+      function getBtnClickEvents() {
+        for (const btn of Array.from(card.buttons.children)) {
+          btn.masterObject = card;
+        }
+  
+        card.completeSelf = function() {
+          project.completeTask(task.title);
+          card.remove();
+        };
+  
+        card.editSelf = function() {
+  
+          EventAggregator.publish('editTaskClicked', [task.title, project.title]);
+  
+        };
+  
+        card.deleteSelf = function() {
+          project.removeTask(task.title);
+          card.remove();
+        };
+      };
 
       function getCardPriority() {
         const priority = task.priority;
@@ -529,7 +658,7 @@ const Display = (function() {
 
       return [initDueDateToggle, initDateStartedToggle]
     };
-  }
+  };
 
   function showEditModal(modal) {
     $('#edit-' + `${modal}` + '-modal')
@@ -548,7 +677,7 @@ const Display = (function() {
       type: 'date'
     });
 
-    for (const toggle of initFormToggles('project')) {
+    for (const toggle of initFormToggles(modal)) {
       toggle();
     };
 
@@ -563,6 +692,15 @@ const Display = (function() {
           const formData = getEditFormData('project');
           
           project.setProperties(formData);
+        });
+      } else if (modal === 'task') {
+        const taskConfirmBtn = document.querySelector('#edit-task-modal .actions .positive');
+        taskConfirmBtn.addEventListener('click', () => {
+          const editModal = document.getElementById('edit-' + `${modal}` + '-modal');
+          const task = editModal.form.task;
+          const formData = getEditFormData('task');
+          
+          task.setProperties(formData);
         });
       };
     };
