@@ -77,7 +77,12 @@ const Display = (function() {
 
     EventAggregator.subscribe('projectsReceipt', projectsReceiptHandler);
     
-    const requestObj = { _token: requestToken };
+    const requestObj = {
+      sort: {
+        byName: 'desc'
+      },
+      _token: requestToken
+    };
     
     EventAggregator.publish('requestProjects', requestObj);
 
@@ -124,11 +129,12 @@ const Display = (function() {
       };
 
       card.editSelf = function() {
+
         EventAggregator.publish('editProjectClicked', project.title);
+
       };
 
       card.deleteSelf = function() {
-        EventAggregator.publish('projectDeleted', project.title);
         project.deleteProject();
         card.remove();
       };
