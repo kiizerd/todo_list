@@ -60,18 +60,31 @@ const projectInterface = (function() {
     };
 
     setProperties(newProps) {
+      const title = this.title;
+      
       for (const prop in newProps) {
-        if (this[prop]) {
-          this[prop] = newProps[prop];
-        };
+        this[prop] = newProps[prop];
       };
+      
+      EventAggregator.publish('projectUpdated', [title, this]);
+      
     };
 
     completeProject() {
-      if (this.tasks.length === 0)
-      
+      if (this.tasks.length === 0) {
+
         EventAggregator.publish('projectCompleted', this);
 
+      } else {
+        for (const task of this.tasks) {
+
+          EventAggregator.publish('taskCompleted', [task, this]);
+
+        };
+        
+        EventAggregator.publish('projectCompleted', this);
+
+      };
     };
 
     deleteProject() {
