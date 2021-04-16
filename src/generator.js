@@ -91,7 +91,29 @@ const Generator = (function() {
       completeIcon.classList.add('check', 'square', 'icon');
 
       completeBtn.addEventListener('click', () => {
-
+        let undo = false;
+        $('body')
+          .toast({
+            position: 'top center',
+            showProgress: 'bottom',
+            displayTime: 3000,
+            message: 'Task complete!!',
+            class: 'green inverted',
+            classActions: 'basic left',
+            closeOnClick: true,
+            actions: [{
+              text: 'Undo?',
+              class: 'ui right labeled icon button black inverted',
+              icon: 'undo',
+              click: function() { undo = true; }
+            }],
+            onHide: () => {
+              if (!undo) {
+                completeBtn.masterObject.completeSelf();
+              };
+            }
+          })
+        ;
       });
   
       completeBtn.append(completeIcon);
@@ -108,7 +130,7 @@ const Generator = (function() {
       editIcon.classList.add('edit', 'icon');
 
       editBtn.addEventListener('click', () => {
-
+        editBtn.masterObject.editSelf();
       });
 
       editBtn.append(editIcon);
@@ -134,6 +156,7 @@ const Generator = (function() {
             message: 'Deleting ' + deleteBtn.masterObject.header.textContent + '...',
             class: 'red inverted',
             classActions: 'basic left',
+            closeOnClick: true,
             actions: [{
               text: 'Undo?',
               class: 'ui right labeled icon button black inverted',
