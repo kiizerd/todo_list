@@ -2,10 +2,12 @@ import { EventAggregator } from './events'
 
 const Database = (function() {
 
-
   const projects = {};
 
-  const completedProjects = {};
+  const completed = {
+    projects: {},
+    tasks: {}
+  };
 
   function initStorage() {
     if (checkForStorage()) {
@@ -30,7 +32,7 @@ const Database = (function() {
   function getStoredCompleted() {
     const localStorage = JSON.parse(window.localStorage.getItem('StorageObject'));
 
-    const completed = localStorage.projects
+    const completed = localStorage.completed
 
     return completed.length ? completed : null;
   }
@@ -88,14 +90,15 @@ const Database = (function() {
     setTimeout(() => {
       window.localStorage.setItem('StorageObject', JSON.stringify({
         'projects': projects,
-        'completedProjects': completedProjects
+        'completed': completed
       }));
-    }, 200);
+
+      EventAggregator.publish('storageUpdated', []);
+    }, 100);    
 
     setTimeout(() => {
       EventAggregator.publish('updateDisplay', []);
-    }, 400);
-    
+    }, 200);    
   };
 
   
@@ -138,11 +141,18 @@ const Database = (function() {
   });
 
 
-  function completeProject(project) {
-    project.active = false;
-    project.completed = true;
+  EventAggregator.subscribe('taskUpdated', args => {
+    const task = args[0];
+    const project = args[1];
 
-    completedProjects[project.title] = project;
+    console.log(task, project);
+
+    updateStorage();
+  });
+
+
+  function completeProject(project) {
+    completed.projects[project.title] = project;
     
     project.deleteProject();
   };
@@ -150,6 +160,22 @@ const Database = (function() {
 
   EventAggregator.subscribe('projectCompleted', project => {
     completeProject(project);
+  });
+
+  
+  EventAggregator.subscribe('taskCompleted', args => {
+    const task = args.task;
+    const project = args.project;
+
+    console.log(task, project);
+
+    task.project = project
+
+    completed.tasks[task.title] = task
+
+    setTimeout(() => {
+      updateStorage();
+    }, 150);
   });
 
 
@@ -170,9 +196,9 @@ const Database = (function() {
   // }
 
   function filterProjects(options, ary) {
-    console.log('filter options', options);
     let result;
     if (options) {
+      console.log('filter options', options);
       if (options.byName) {
         result = ary.filter(project => project.title === options.byName);
       }
@@ -182,8 +208,27 @@ const Database = (function() {
   };
 
   function sortProjects(options, ary) {
-    
-    return ary
+    let result
+    if (options) {
+      console.log('sort options', options);
+      if (options.byName) {
+        result = ary.sort((a, b) => {          
+          const aTitle = [...a.title];
+          const bTitle = [...b.title];
+
+          let sortResult;
+          if (options.byName === 'desc') {
+            sortResult = aTitle == bTitle ? 0 : aTitle < bTitle ? -1 : 1;
+          }
+          if (options.byName === 'asc') {
+            sortResult = aTitle == bTitle ? 0 : aTitle > bTitle ? -1 : 1;
+          }
+          
+          return sortResult
+        });
+      };
+    } else return ary
+    return result
   };
 
   EventAggregator.subscribe('requestProjects', options => {
