@@ -118,12 +118,21 @@ const Display = (function() {
         btn.masterObject = card;
       }
 
+      card.completeSelf = function() {
+        project.completeProject();
+        card.remove();
+      };
+
+      card.editSelf = function() {
+        EventAggregator.publish('editProjectClicked', project.title);
+      };
+
       card.deleteSelf = function() {
         EventAggregator.publish('projectDeleted', project.title);
         project.deleteProject();
         card.remove();
-      }
-    }      
+      };
+    };
 
     function getCardPriority() {
       const priority = project.priority;
