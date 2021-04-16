@@ -17,11 +17,20 @@ const ProjectController = (function() {
   });
 
   
+  
   EventAggregator.subscribe('projectsReceipt', projects => {
     if (projects._token && (projects._token._id === requestToken._id)) {
       primedProject = projects[0];
       console.log('Primed project --> ', primedProject);
     } else { return false }
+    
+    EventAggregator.subscribe('requestPrimedProject', reqObj => {
+      let resObj = primedProject;
+      if (reqObj._token) resObj._token = reqObj._token;
+      EventAggregator.publish('primedProjectReceipt', primedProject);
+
+      delete resObj._token;
+    });
   });
 
   
