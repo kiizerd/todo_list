@@ -6,7 +6,6 @@ html, body {
   scrollbar-color: #666 slategray;
   scrollbar-width: thin;
   font-family: 'Sen', sans-serif;
-  height: 100%;
   max-width: 100%;
   overflow-x: hidden;
 }
