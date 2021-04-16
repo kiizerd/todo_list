@@ -22,6 +22,8 @@ const Display = (function() {
     content.activePage = pageName;
     
     window.scrollTo(0, 0);
+
+    EventAggregator.publish('activePageSet', pageName);
   };
 
   function getPage(name) {
