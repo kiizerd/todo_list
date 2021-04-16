@@ -45,15 +45,17 @@ const projectInterface = (function() {
       });
 
       task.completeTask();
+
+      const index = this.tasks.indexOf(task);
+      this.tasks.splice(index, 1);
     };
 
     removeTask(taskName) {
       const task = this.getTask(taskName);
       const index = this.tasks.indexOf(task);
 
-
       task.active = false;
-      this.task.splice(index, 1);
+      this.tasks.splice(index, 1);
 
       EventAggregator.publish('taskDeleted', task);
 
@@ -71,6 +73,9 @@ const projectInterface = (function() {
     };
 
     completeProject() {
+      this.active = false;
+      this.completed = true;
+
       if (this.tasks.length === 0) {
 
         EventAggregator.publish('projectCompleted', this);
@@ -96,7 +101,7 @@ const projectInterface = (function() {
       EventAggregator.publish('projectDeleted', this);
 
     };
-
+    
   };
 
 

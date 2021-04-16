@@ -19,19 +19,40 @@ const taskInterface = (function() {
 
       this.completed = false;
       this.active = true;
-    }
+    };
+
+    getPrimedProject() {
+      const reqToken = new Token('primedProjects', 'taskInterface');
+
+      const reqObject = { _token: reqToken };
+      
+      let primedProject;
+      EventAggregator.subscribe('primedProjectReceipt', project => {
+        primedProject = project;
+      });
+
+      EventAggregator.publish('requestPrimedProject', reqObject);
+
+      return primedProject;
+    };
 
     setProperties(newProps) {
+      const title = this.title
       for (const prop in newProps) {
-        if (this[prop]) {
-          task[prop] = newProps[prop];
-        };
+        this[prop] = newProps[prop]
       };
+
+      const primedProject = this.getPrimedProject();
+
+      EventAggregator.publish('taskUpdated', [[title, this], primedProject]);
+
     };
 
     completeTask() {
+      this.active = false;
       this.completed = true;
-    }
+    };
+
   };
 
 
