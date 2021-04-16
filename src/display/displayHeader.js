@@ -1,16 +1,66 @@
-import { EventAggregator } from '../events';
+import { EventAggregator, Token } from '../events';
 
 const Display = (function() {
+
   
   EventAggregator.subscribe('projectCreated', project => {
-    addProjectToMenu(project);
+    updateMenu();
   });
 
-  EventAggregator.subscribe('storedProjectToProject', project => {
-    addProjectToMenu(project);
+  
+  EventAggregator.subscribe('projectFromStorage', project => {
+    updateMenu();
   });
 
-  function addProjectToMenu(project) {
+
+  EventAggregator.subscribe('storageUpdated', () => {
+    updateMenu();
+  });
+
+
+  EventAggregator.subscribe('activePageSet', pageName => {
+    const headerLinks = Array.from(document.querySelectorAll('#header a'));
+
+    const oldActiveItem = document.querySelector('#header .active');
+    if (oldActiveItem) {
+      oldActiveItem.classList.remove('active');
+    };
+
+    for(const item of Array.from(headerLinks)) {
+      if (item.tag === pageName) {
+        item.classList.add('active');
+      };
+    };
+  });
+
+
+  function updateMenu() {
+    const reqToken = new Token('requestProjects', 'displayHeader');
+
+    const reqObject = {
+      sort: {
+        byName: 'desc'
+      },
+      _token: reqToken
+    };
+    
+    let projects;    
+    EventAggregator.subscribe('projectsReceipt', reqProjects => {
+      if (reqProjects._token && !(reqProjects._token === reqToken)) return false
+      projects = reqProjects        
+    });
+    
+    EventAggregator.publish('requestProjects', reqObject);
+    
+    const projectsMenu = document.getElementById('header-projects-menu');
+    projectsMenu.textContent = '';
+    
+    for (const project of projects) {
+      addProjectToMenu(project.title);
+    };
+  }; 
+
+  function addProjectToMenu(projectName) {
     const projectsMenu = document.getElementById('header-projects-menu');
 
     const newProjectItem = getProjectMenuItem();
@@ -19,7 +69,7 @@ const Display = (function() {
       const item = document.createElement('a');
       item.classList.add('item');
       item.href = '#'
-      item.tag = item.textContent = project.title;
+      item.tag = item.textContent = projectName;
       
       return item
     }
