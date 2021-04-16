@@ -16,7 +16,7 @@ const Display = (function() {
   EventAggregator.subscribe('newTaskClicked', () => {
     let modal = document.getElementById('new-task-modal');
     if (!modal) {
-      modal = getNewTaskModal()
+      modal = getNewTaskModal();
       document.body.append(modal);
     }
     
@@ -43,7 +43,7 @@ const Display = (function() {
     const form = Generator.createForm();
     form.id = 'new-task-form';
     form.onsubmit = "return false";
-    form.reset = resetForm.bind(form);
+    form.reset = resetNewForm.bind(form);
 
     return form
   };
@@ -68,7 +68,7 @@ const Display = (function() {
     const form = Generator.createForm();
     form.id = 'new-project-form';
     form.onsubmit = "return false";
-    form.reset = resetForm.bind(form);
+    form.reset = resetNewForm.bind(form);
 
     return form
   };
@@ -92,7 +92,7 @@ const Display = (function() {
     return formData
   };
     
-  function resetForm() {
+  function resetNewForm() {
     const formName = this.id === 'new-task-form' ? 'task' : 'project';
     const formModal = this.parentElement;
     formModal.textContent = '';
@@ -104,6 +104,96 @@ const Display = (function() {
     $('#new-' + `${formName}` + '-modal #new-form-priority-dropdown')
       .dropdown()
     ;
+  };
+
+
+  EventAggregator.subscribe('editProjectClicked', projectName => {
+    let modal = document.getElementById('edit-project-modal');
+    if (!modal) {
+      modal = getEditProjectModal();
+      document.body.append(modal);
+    };
+
+    const requestToken = new Token('requestProjects', 'displayProject');
+
+    const requestObj = {
+      filter: {
+        byName: projectName
+      },
+      _token: requestToken
+    };
+    
+    let project;
+    EventAggregator.subscribe('projectsReceipt', projectToEdit => {
+      if (projectToEdit._token && !(projectToEdit._token === requestToken)) return false
+      project = projectToEdit[0];
+    });
+
+    EventAggregator.publish('requestProjects', requestObj);
+
+    modal.form.project = project;
+    modal.form.fill(project);
+
+    showEditModal('project');
+  });
+
+  
+  function getEditTaskModal() {
+
+  };
+
+  function getEditTaskForm() {
+    
+  };
+
+  function getEditProjectModal() {
+    const modal = Generator.createModal();
+    modal.id = 'edit-project-modal';
+    modal.classList.add('small');
+
+    modal.header.textContent = 'Edit Project';
+
+    const modalForm = getEditProjectForm();
+
+    modal.form = modalForm;
+
+    modal.content.append(modalForm);
+
+    return modal
+  };
+
+  function getEditProjectForm() {
+    const form = Generator.createForm();
+    form.id = 'edit-project-form';
+    form.onsubmit = "return false";
+    
+    form.fill = fill;
+
+    return form
+
+    function fill(project) {
+      form.elements[0].value = project.title;
+      form.elements[1].value = project.priority;
+      form.elements[2].value = project.description;
+      form.elements[3].value = project.dates.started;
+      form.elements[5].value = project.dates.due;
+    };
+  };
+
+  function getEditFormData(formName) {
+    const form = document.forms['edit-' + `${formName}` + '-form'];
+    
+    const formData = {
+      title: form.elements[0].value,
+      priority: parseInt(form.elements[1].value),
+      description: form.elements[2].value,
+      dates: {
+        started: form.elements[3].value,
+        due: form.elements[5].value
+      }
+    };
+
+    return formData;
   };
 
   function getProjectPage(projectName) {
@@ -374,7 +464,6 @@ const Display = (function() {
         const projectConfirmBtn = document.querySelector('#new-project-modal .actions .positive');
         projectConfirmBtn.onclick = () => { 
           const formData = getNewFormData('project');
-          console.log(formData)
           EventAggregator.publish('createProject', formData);
           showToast();
           ;
@@ -391,7 +480,7 @@ const Display = (function() {
 
       function showToast() {        
         const modalCapital = modal.charAt(0).toUpperCase() + modal.slice(1);
-        const toastColor = modal === 'task' ? 'teal' : 'green';
+        const toastColor = modal === 'task' ? 'olive' : 'green';
         
         $('body')
         .toast({        
@@ -407,7 +496,7 @@ const Display = (function() {
     };
 
     function initFormToggles(modal) {
-      const modalId = '#new-' + `${modal}` + '-modal'
+      const modalId = '#new-' + `${modal}` + '-modal';
       function initDueDateToggle() {
         const fieldId = '#new-form-dueDateField';
         const toggleId = '#new-form-dueDateToggle';
@@ -441,6 +530,78 @@ const Display = (function() {
       return [initDueDateToggle, initDateStartedToggle]
     };
   }
+
+  function showEditModal(modal) {
+    $('#edit-' + `${modal}` + '-modal')
+      .modal('show')
+    ;    
+
+    $('#edit-' + `${modal}` + '-modal #new-form-priority-dropdown')
+      .dropdown()
+    ;
+
+    $('.ui.checkbox')
+      .checkbox()
+    ;
+
+    $('.ui.calendar').calendar({
+      type: 'date'
+    });
+
+    for (const toggle of initFormToggles('project')) {
+      toggle();
+    };
+
+    addConfirmClickEvents();
+
+    function addConfirmClickEvents() {
+      if (modal === 'project') {
+        const projectConfirmBtn = document.querySelector('#edit-project-modal .actions .positive');
+        projectConfirmBtn.addEventListener('click', () => {
+          const editModal = document.getElementById('edit-' + `${modal}` + '-modal');
+          const project = editModal.form.project;
+          const formData = getEditFormData('project');
+          
+          project.setProperties(formData);
+        });
+      };
+    };
+
+    function initFormToggles(modal) {
+      const modalId = '#edit-' + `${modal}` + '-modal'
+      function initDueDateToggle() {
+        const fieldId = '#new-form-dueDateField';
+        const toggleId = '#new-form-dueDateToggle';
+        const dueDateToggle = document.querySelector(modalId + ' ' + toggleId);
+        dueDateToggle.classList.remove('hidden');
+        dueDateToggle.onclick = () => {
+          const dueDateField = document.querySelector(modalId + ' ' + fieldId);
+          if (dueDateToggle.checked) {
+            dueDateField.classList.remove('disabled');
+          } else {
+            dueDateField.classList.add('disabled');
+          };
+        };
+      };
+
+      function initDateStartedToggle() {
+        const fieldId = '#new-form-dateStartedField';
+        const toggleId = '#new-form-dateStartedToggle';
+        const dateStartedToggle = document.querySelector(modalId + ' ' + toggleId);
+        dateStartedToggle.classList.remove('hidden');
+        dateStartedToggle.onclick = () => {
+          const dateStartedField = document.querySelector(modalId + ' ' + fieldId);
+          if (dateStartedToggle.checked) {
+            dateStartedField.classList.add('disabled');
+          } else {
+            dateStartedField.classList.remove('disabled');
+          };
+        };
+      };
+
+      return [initDueDateToggle, initDateStartedToggle]
+    };
+  };
 
   return { getProjectPage }
 })()
