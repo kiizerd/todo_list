@@ -1,6 +1,3 @@
-body {
-  overflow-y: hidden;
-}
 #project-page-container {
   padding-top: 4rem;
   max-width: 750px;
@@ -13,6 +10,15 @@ body {
 
 #project-page-container .horizontal.segments {
   margin: 0;
+}
+
+#project-page-header-btns-column {
+  margin: auto;
+}
+
+#project-page-details-row {
+  display: flex;
+  align-items: center;
 }
 
 #project-page-tasks-segment {
