@@ -12,6 +12,10 @@
   font-size: 12px;
 }
 
+.homepage-project-card .header .buttons {
+  margin-left: 2px;
+}
+
 .project-card-task-list {
   max-height: 160px;
   overflow-y: auto;
