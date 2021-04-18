@@ -11,7 +11,7 @@
 
  ---
 
-  The styling and UI is made with [Fomantic UI](https://fomantic-ui.com/) a community fork of [Semantic UI](https://semantic-ui.com/), which I choose due to issues with installing Semantic on Windows and temporarily only having access to a Windows device.
+  The styling and UI is made with [Fomantic UI](https://fomantic-ui.com/), a community fork of [Semantic UI](https://semantic-ui.com/), which I choose due to issues with installing Semantic on Windows and temporarily only having access to a Windows device.
 
   My experience with Fomantic/Semantic was amazing and I would heavily recommend it to anyone. 
   There are many features that I learned of a little late that I plan to use in my future projects, such as quick theming and Global site variables.
