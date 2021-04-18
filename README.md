@@ -18,7 +18,7 @@
 
  ---
 
-  I experimented with an [EventAggregator Module](https://github.com/kiizerd/todo_list/blob/main/src/events.js) with a Pub/Sub modal to handle most of the inter-module operations.  
+  I experimented with an [EventAggregator Module](https://github.com/kiizerd/todo_list/blob/main/src/events.js) with a Pub/Sub model to handle most of the inter-module operations.  
   Some problems I had with my implementation were..  
   - Duplicating Event handlers:  
     - Problem: a certain handler for a certain event would get applied to that even more than once so  
