@@ -12,6 +12,7 @@
     
   - User Page
 
+  - Empty List Prompt
  ---
 
   Data from users is stored using the browsers LocalStorage API.  
