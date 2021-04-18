@@ -44,7 +44,6 @@ const Generator = (function() {
         function getCardHeaderDivider() {
           const divider = document.createElement('div');
           divider.classList.add('ui', 'inverted', 'right', 'aligned', 'divider')
-                                'fitted';
 
           return divider
         };
@@ -272,9 +271,14 @@ const Generator = (function() {
     const datesField = getDateFields();
     datesSegment.append(datesField);
 
-    form.append(titleSegment, prioritySegment, descSegment, datesSegment);
+    const errorMessage = getErrorMessage();
+
+    form.append(titleSegment, prioritySegment, descSegment, datesSegment, errorMessage);
 
     form.addResetBtn = addResetBtn;
+
+    formValidation.call(form);
+    form.valid = false;
 
     return form
 
@@ -521,6 +525,13 @@ const Generator = (function() {
 
     };
 
+    function getErrorMessage() {
+      const field = document.createElement('div');
+      field.classList.add('ui', 'error', 'message');
+
+      return field
+    }
+
     function addResetBtn() {
       const resetBtn = document.createElement('div');
       resetBtn.classList.add('ui', 'left', 'floated', 'right', 'labeled', 'icon', 'button');
@@ -535,6 +546,50 @@ const Generator = (function() {
 
       this.parentElement.parentElement.actions.append(resetBtn);
     };
+
+    function formValidation() {
+      // let formObj;
+      // if (context === 'edit') {
+      //   formObj = object === 'task' ? form.task : form.project;
+      // };
+
+      // $.fn.form.settings.rules.matchExistingProject = function(value) {
+
+      //   return true
+      // };
+
+      // $.fn.form.settings.rules.matchExistingTask = function(value) {
+
+      //   return true
+      // // }
+
+      // const matchExistingProjectRule = {
+      //   type: 'matchExistingProject',
+      //   prompt: 'Title must not match existing project'
+      // }
+
+      // const matchExistingTaskRule = {
+      //   type: 'matchExistingTask',
+      //   prompt: 'Title must not match existing task'
+      // }
+
+      $(this)
+        .form({
+          fields: {
+            title: ['minLength[4]', 'empty'],
+            description: ['minLength[8]', 'empty']
+          },
+          onSuccess: function (event, fields) {
+            console.log('i am valid')
+            this.valid = true;
+          },
+          onFailure: function (formErrors, fields) {
+            console.log('i am invalid')
+            this.valid = false;
+          }
+        })
+        ;
+    }
 
   };
 
