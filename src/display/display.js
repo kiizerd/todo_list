@@ -1,14 +1,16 @@
 import { EventAggregator } from '../events';
-import { addProjectEvent } from './displayHeader';
+import { addNewProjectEvent } from './displayHeader';
 import { getHomePage } from './displayHome';
 import { Project } from './displayProject';
+import { Modal } from './displayModal';
 
 const Display = (function() {
   
   const content = document.getElementById('content');
 
   function init() {
-    addProjectEvent()
+    Modal;
+    addNewProjectEvent()
     setActivePage('home');
     content.setActivePage = setActivePage
   };
