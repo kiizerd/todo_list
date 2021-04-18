@@ -3,6 +3,7 @@ import { EventAggregator, Token } from '../events';
 
 const Display = (function() {
 
+
   function getHomePage() {
     const homepage = document.createElement('div');
     homepage.classList.add('ui', 'container');
@@ -29,17 +30,7 @@ const Display = (function() {
         column.append(card);
 
         div.append(column);
-      }
-      
-      EventAggregator.subscribe('projectCreated', newProject => {
-        const column = getColumn();
-
-        const newCard = createProjectCard(newProject);
-
-        column.append(newCard);
-
-        div.append(column);
-      });
+      };
 
       return div
 
@@ -54,7 +45,7 @@ const Display = (function() {
       }
     }
 
-  }
+  };
 
   function getProjectCards(options) {
     const projectList = [];
@@ -95,7 +86,7 @@ const Display = (function() {
     fillCard(card, project);
 
     return card
-  }
+  };
 
   function fillCard(card, project) {
     card.header.textContent = project.title;
@@ -194,13 +185,8 @@ const Display = (function() {
     const tasksSegment = document.createElement('div');
     tasksSegment.classList.add('ui', 'grey', 'inverted', 'segment');
 
-    if (project.tasks.length) tasksSegment.append(getTaskList());
+    if (project.tasks && project.tasks.length) tasksSegment.append(getTaskList());
     tasksSegment.append(getAddTaskBtn());
-
-    EventAggregator.subscribe('taskCreated', newTask => {
-      tasksSegment.innerHTML = ''
-      tasksSegment.append(getTaskList(), getAddTaskBtn());
-    });
 
     tasksContent.append(tasksSegment);
 
