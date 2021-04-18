@@ -1,5 +1,4 @@
  # todo_list
- ---
  
  ### Front-end CRUD web-app made with JavaScript
 
