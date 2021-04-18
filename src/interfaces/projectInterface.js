@@ -23,13 +23,15 @@ const projectInterface = (function() {
     };
 
     getTask(taskName) {
+      let result = false;
       for (const task of this.tasks) {
-        if (task.title = taskName) {
-          return task;
+        if (task.title === taskName) {
+          result = task;
+          break
         };
       };
 
-      return new Error('Task not found');
+      return result;
     };
 
     addTask(taskObj) {
@@ -62,14 +64,17 @@ const projectInterface = (function() {
     };
 
     setProperties(newProps) {
+      const content = document.getElementById('content');
       const title = this.title;
       
       for (const prop in newProps) {
         this[prop] = newProps[prop];
       };
-      
+
       EventAggregator.publish('projectUpdated', [title, this]);
-      
+
+      content.setActivePage(newProps['title']);
+
     };
 
     completeProject() {
