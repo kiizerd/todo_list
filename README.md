@@ -6,6 +6,14 @@
 
  ---
 
+  #### W.I.P.
+
+  - History Page
+    
+  - User Page
+
+ ---
+
   Data from users is stored using the browsers LocalStorage API.  
   All of the storage operations are handled by a [Database module](https://github.com/kiizerd/todo_list/blob/main/src/database.js) 
 
