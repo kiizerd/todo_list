@@ -98,14 +98,14 @@ const Display = (function() {
     content.setActivePage(e.target.tag);    
   }
 
-  function addProjectEvent() {
+  function addNewProjectEvent() {
     const btn = document.getElementById('header-new-project-btn');
     btn.onclick = () => EventAggregator.publish('newProjectClicked', btn);
   }
 
-  return { addProjectEvent }
+  return { addNewProjectEvent }
 })();
 
-const addProjectEvent = Display.addProjectEvent;
+const addNewProjectEvent = Display.addNewProjectEvent;
 
-export { addProjectEvent };
+export { addNewProjectEvent };
