@@ -97,7 +97,7 @@ const Generator = (function() {
             position: 'top center',
             showProgress: 'bottom',
             displayTime: 1600,
-            message: 'Task complete!!',
+            message: completeBtn.masterObject.header.textContent + ' complete!!',
             class: 'green inverted',
             classActions: 'basic left',
             closeOnClick: true,
@@ -280,13 +280,14 @@ const Generator = (function() {
 
     function getTitleField() {
       const field = document.createElement('div');
-      field.classList.add('field');
+      field.classList.add('field', 'required');
 
       const label = document.createElement('label');
       label.textContent = 'Title';
 
       const input = document.createElement('input');
       input.type = 'text';
+      input.name = 'title';
 
       field.append(label, input);
 
@@ -295,13 +296,14 @@ const Generator = (function() {
 
     function getDescField() {
       const field = document.createElement('div');
-      field.classList.add('field');
+      field.classList.add('field', 'required');
 
       const label = document.createElement('label');
       label.textContent = 'Description';
 
       const textArea = document.createElement('textarea');
       textArea.rows = '2';
+      textArea.name = 'description';
 
       field.append(label, textArea);
 
