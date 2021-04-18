@@ -204,7 +204,7 @@ const Database = (function() {
       }
     }
     else return ary
-    return result
+    return result ? result : [];
   };
 
   function sortProjects(options, ary) {
@@ -234,12 +234,12 @@ const Database = (function() {
   EventAggregator.subscribe('requestProjects', options => {
     const reqProjects = Object.values(projects);
     console.log('reqProjects', reqProjects);
-    const filteredProjects = filterProjects(options.filter, reqProjects);
-    const sortedProjects = sortProjects(options.sort, filteredProjects);
+    const filtered = filterProjects(options.filter, reqProjects);
+    const sorted = sortProjects(options.sort, filtered);
 
-    if (options._token) sortedProjects._token = options._token;
+    if (options._token) sorted._token = options._token;
 
-    EventAggregator.publish('projectsReceipt', sortedProjects);
+    EventAggregator.publish('projectsReceipt', sorted);
   });
   
   return { initStorage }
