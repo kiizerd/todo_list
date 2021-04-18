@@ -2,306 +2,41 @@ import { EventAggregator, Token } from '../events';
 import { Generator } from '../generator';
 
 const Display = (function() {
-
-  // most editForm and editModal funcs can be combined 
-  // with newForm and newModal funcs
-  // maybe with abstracted functions and a context parameter
-  // getModal(context(new or edit), object(project or task)) {
-    // getForm(context(new or edit), object(project or task)) {
-      //onclickconfirm {
-        // getFormData
-      // }
-
-    // }
-
-  // }
-
-  EventAggregator.subscribe('newProjectClicked', () => {
-    let modal = document.getElementById('new-project-modal');
-    if (!modal) {
-      modal = getNewProjectModal();
-      document.body.append(modal);
-    }
-
-    showModal('project');
-  });
-
-  EventAggregator.subscribe('newTaskClicked', () => {
-    let modal = document.getElementById('new-task-modal');
-    if (!modal) {
-      modal = getNewTaskModal();
-      document.body.append(modal);
-    }
-    
-    showModal('task');
-  });
-
-  function getNewTaskModal() {
-    const modal = Generator.createModal();
-    modal.id = 'new-task-modal';
-    modal.classList.add('tiny');
-
-    modal.header.textContent = 'New Task';
-
-    const modalForm = getNewTaskForm();
-    
-    modal.content.append(modalForm);
-
-    modalForm.addResetBtn.bind(modalForm).call();
-
-    return modal
-  };
-
-  function getNewTaskForm() {
-    const form = Generator.createForm();
-    form.id = 'new-task-form';
-    form.onsubmit = "return false";
-    form.reset = resetNewForm.bind(form);
-
-    return form
-  };
-
-  function getNewProjectModal() {
-    const modal = Generator.createModal();
-    modal.id = 'new-project-modal';
-    modal.classList.add('small');
-
-    modal.header.textContent = 'New Project';
-
-    const modalForm = getNewProjectForm();
-
-    modal.content.append(modalForm);
-    
-    modalForm.addResetBtn.bind(modalForm).call();
-
-    return modal
-  };
-
-  function getNewProjectForm() {
-    const form = Generator.createForm();
-    form.id = 'new-project-form';
-    form.onsubmit = "return false";
-    form.reset = resetNewForm.bind(form);
-
-    return form
-  };
-
-  function getNewFormData(formName) {
-    const formId = 'new-' + `${formName}` + '-form'
-    const form = document.forms[formId];
-    
-    const formData = {
-      title: form.elements[0].value,
-      priority: form.elements[1].value,
-      description: form.elements[2].value,
-      dates: {
-        started: form.elements[3].value,
-        due: form.elements[5].value
-      }
-    };
-
-    form.reset();
-    
-    return formData
-  };
-    
-  function resetNewForm() {
-    const formName = this.id === 'new-task-form' ? 'task' : 'project';
-    const formModal = this.parentElement;
-    formModal.textContent = '';
-
-    const newForm = formName === 'task' ?  getNewTaskForm() : getNewProjectForm();
-
-    formModal.append(newForm);
-
-    $('#new-' + `${formName}` + '-modal #new-form-priority-dropdown')
-      .dropdown()
-    ;
-  };
-
-
-  EventAggregator.subscribe('editProjectClicked', projectName => {
-    let modal = document.getElementById('edit-project-modal');
-    if (!modal) {
-      modal = getEditProjectModal();
-      document.body.append(modal);
-    };
-
-    const requestToken = new Token('requestProjects', 'displayProject');
-
-    const requestObj = {
-      filter: {
-        byName: projectName
-      },
-      _token: requestToken
-    };
-    
-    let project;
-    EventAggregator.subscribe('projectsReceipt', projectToEdit => {
-      if (projectToEdit._token && !(projectToEdit._token === requestToken)) return false
-      project = projectToEdit[0];
-    });
-
-    EventAggregator.publish('requestProjects', requestObj);
-
-    modal.form.project = project;
-    modal.form.fill(project);
-
-    showEditModal('project');
-  });
-
-  EventAggregator.subscribe('editTaskClicked', args => {
-    let modal = document.getElementById('edit-task-modal');
-    if (!modal) {
-      modal = getEditTaskModal();
-      document.body.append(modal);
-    };
-
-    const taskName = args[0];
-    const projectName = args[1];    
-
-    const requestToken = new Token('requestProjects', 'displayProject');
-
-    const requestObj = {
-      filter: {
-        byName: projectName
-      },
-      _token: requestToken
-    };
-    
-    let project;
-    EventAggregator.subscribe('projectsReceipt', projectToEdit => {
-      if (projectToEdit._token && !(projectToEdit._token === requestToken)) return false
-      project = projectToEdit[0];
-    });
-
-    EventAggregator.publish('requestProjects', requestObj);
-
-    const task = project.getTask(taskName);
-
-    modal.form.task = task;
-    modal.form.fill(task);
-
-    showEditModal('task');
-  });
-
+  const requestToken = new Token('requestProject', 'displayProject');
   
-  function getEditTaskModal() {
-    const modal = Generator.createModal();
-    modal.id = 'edit-task-modal';
-    modal.classList.add('small');
+  const result = { project: '' }
 
-    modal.header.textContent = 'Edit Task';
-
-    const modalForm = getEditTaskForm();
-
-    modal.form = modalForm;
-
-    modal.content.append(modalForm);
-
-    return modal
+  const projectsReceiptHandler = function(projects) {
+    if (projects._token && !(projects._token === requestToken)) return false
+    result.project = projects[0];
   };
 
-  function getEditTaskForm() {
-    const form = Generator.createForm();
-    form.id = 'edit-task-form';
-    form.onsubmit = "return false";
+  EventAggregator.subscribe('projectsReceipt', projectsReceiptHandler);
 
-    form.fill = fill;
+  function getProject(projectName) {
 
-    return form
-
-    function fill(task) {     
-      form.elements[0].value = task.title;
-      form.elements[1].value = task.priority;
-      form.elements[2].value = task.description;
-      form.elements[3].value = task.dates.started;
-      form.elements[5].value = task.dates.due;
-    }
-  };
-
-  function getEditProjectModal() {
-    const modal = Generator.createModal();
-    modal.id = 'edit-project-modal';
-    modal.classList.add('small');
-
-    modal.header.textContent = 'Edit Project';
-
-    const modalForm = getEditProjectForm();
-
-    modal.form = modalForm;
-
-    modal.content.append(modalForm);
-
-    return modal
-  };
-
-  function getEditProjectForm() {
-    const form = Generator.createForm();
-    form.id = 'edit-project-form';
-    form.onsubmit = "return false";
-    
-    form.fill = fill;
-
-    return form
-
-    function fill(project) {
-      form.elements[0].value = project.title;
-      form.elements[1].value = project.priority;
-      form.elements[2].value = project.description;
-      form.elements[3].value = project.dates.started;
-      form.elements[5].value = project.dates.due;
-    };
-  };
-
-  function getEditFormData(formName) {
-    const form = document.forms['edit-' + `${formName}` + '-form'];
-    
-    const formData = {
-      title: form.elements[0].value,
-      priority: parseInt(form.elements[1].value),
-      description: form.elements[2].value,
-      dates: {
-        started: form.elements[3].value,
-        due: form.elements[5].value
-      }
+    const requestObj = {
+      filter: {
+        byName: projectName
+      },
+      _token: requestToken
     };
 
-    return formData;
+    EventAggregator.publish('requestProjects', requestObj);  
+    
+    return result.project
   };
 
   function getProjectPage(projectName) {
     const projectPage = Generator.createProjectPage();
     const segment = projectPage.segment;
-    const project = getProject();
+    const project = getProject(projectName);
+
+    projectPage.fill = fillProject;
 
     fillProject();
     
     return projectPage
-
-    function getProject() {
-      const requestToken = new Token('requestProject', 'displayProject');
-      
-      const result = { project: '' }
-  
-      const projectsReceiptHandler = function(projects) {
-        if (projects._token && !(projects._token === requestToken)) return false
-        result.project = projects[0];
-      };
-  
-      EventAggregator.subscribe('projectsReceipt', projectsReceiptHandler);
-  
-      const requestObj = {
-        filter: {
-          byName: projectName
-        },
-        _token: requestToken
-      };
-  
-      EventAggregator.publish('requestProjects', requestObj);  
-      
-      return result.project
-    };
 
     function fillProject() {
       segment.heading.textContent = project.title;
@@ -406,6 +141,7 @@ const Display = (function() {
       function fillTasks() {
         const tasks = project.tasks;
         const tasksSegment = segment.tasks;
+        tasksSegment.id = 'project-card-task-segment';
         const addTaskBtn = getAddTaskBtn();
         
         tasksSegment.parentElement.append(addTaskBtn);
@@ -418,11 +154,6 @@ const Display = (function() {
         else {
           fillTaskList();
         };
-
-        EventAggregator.subscribe('taskCreated', newTask => {
-          tasksSegment.textContent = '';
-          fillTaskList()            
-        });
         
         function fillTaskList() {
           tasksSegment.classList.add('two', 'column', 'stackable', 'grid');
@@ -479,43 +210,46 @@ const Display = (function() {
     function getTaskCard(task) {
       const card = Generator.createTaskCard();
 
-      fillTaskCard(card, task);
+      fillTaskCard.call(card, task);
 
       return card;
     };
 
-    function fillTaskCard(card, task) {
-      card.header.textContent = task.title;
+    function fillTaskCard(task) {
+      this.header.textContent = task.title;
 
-      card.desc.textContent = task.description;
+      this.desc.textContent = task.description;
 
-      getBtnClickEvents();
+      getBtnClickEvents.bind(this).call();
 
-      card.meta.append(getCardPriority());
+      this.meta.append(getCardPriority());
 
-      card.dates = getCardDatesContent();
+      this.dates = getCardDatesContent();
 
-      card.append(card.dates);
+      this.task = task;
+
+      this.append(this.dates);
       
       function getBtnClickEvents() {
-        for (const btn of Array.from(card.buttons.children)) {
-          btn.masterObject = card;
-        }
-  
-        card.completeSelf = function() {
-          project.completeTask(task.title);
-          card.remove();
+        for (const btn of Array.from(this.buttons.children)) {
+          btn.masterObject = this;
         };
   
-        card.editSelf = function() {
+        this.completeSelf = function() {
+          project.completeTask(this.task.title);
+          this.remove();
+        };
   
-          EventAggregator.publish('editTaskClicked', [task.title, project.title]);
+        this.editSelf = function() {
+  
+          console.log('makin it here chief', this.task);
+          EventAggregator.publish('editTaskClicked', [this.task.title, project.title]);
   
         };
   
-        card.deleteSelf = function() {
-          project.removeTask(task.title);
-          card.remove();
+        this.deleteSelf = function() {
+          project.removeTask(this.task.title);
+          this.remove();
         };
       };
 
@@ -561,184 +295,6 @@ const Display = (function() {
 
     };
 
-  };
-
-  function showModal(modal) {
-    $('#new-' + `${modal}` + '-modal')
-      .modal('show')
-    ;
-
-    $('#new-' + `${modal}` + '-modal #new-form-priority-dropdown')
-      .dropdown()
-    ;
-
-    $('.ui.checkbox')
-      .checkbox()
-    ;
-
-    $('.ui.calendar').calendar({
-      type: 'date'
-    });
-    
-    addConfirmClickEvents();
-    
-    const initToggles = initFormToggles(modal);
-    for (const toggle of initToggles) {
-      toggle();
-    };
-
-
-    function addConfirmClickEvents() {      
-      if (modal === 'project') {
-        const projectConfirmBtn = document.querySelector('#new-project-modal .actions .positive');
-        projectConfirmBtn.onclick = () => { 
-          const formData = getNewFormData('project');
-          EventAggregator.publish('createProject', formData);
-          showToast();
-          ;
-        };
-
-      } else if (modal === 'task') {
-        const taskConfirmBtn = document.querySelector('#new-task-modal .actions .positive');
-        taskConfirmBtn.onclick = () => {
-          const formData = getNewFormData('task');
-          EventAggregator.publish('createTask', formData);              
-          showToast();
-        };
-      };
-
-      function showToast() {        
-        const modalCapital = modal.charAt(0).toUpperCase() + modal.slice(1);
-        const toastColor = modal === 'task' ? 'olive' : 'green';
-        
-        $('body')
-        .toast({        
-          position: 'top center',
-          showProgress: 'bottom',
-          displayTime: 1600,
-          message: modalCapital + ' created...',
-          class: toastColor + ' inverted',
-        })
-        ;
-      }
-
-    };
-
-    function initFormToggles(modal) {
-      const modalId = '#new-' + `${modal}` + '-modal';
-      function initDueDateToggle() {
-        const fieldId = '#new-form-dueDateField';
-        const toggleId = '#new-form-dueDateToggle';
-        const dueDateToggle = document.querySelector(modalId + ' ' + toggleId);
-        dueDateToggle.classList.remove('hidden');
-        dueDateToggle.onclick = () => {
-          const dueDateField = document.querySelector(modalId + ' ' + fieldId);
-          if (dueDateToggle.checked) {
-            dueDateField.classList.remove('disabled');
-          } else {
-            dueDateField.classList.add('disabled');
-          };
-        };
-      };
-
-      function initDateStartedToggle() {
-        const fieldId = '#new-form-dateStartedField';
-        const toggleId = '#new-form-dateStartedToggle';
-        const dateStartedToggle = document.querySelector(modalId + ' ' + toggleId);
-        dateStartedToggle.classList.remove('hidden');
-        dateStartedToggle.onclick = () => {
-          const dateStartedField = document.querySelector(modalId + ' ' + fieldId);
-          if (dateStartedToggle.checked) {
-            dateStartedField.classList.add('disabled');
-          } else {
-            dateStartedField.classList.remove('disabled');
-          };
-        };
-      };
-
-      return [initDueDateToggle, initDateStartedToggle]
-    };
-  };
-
-  function showEditModal(modal) {
-    $('#edit-' + `${modal}` + '-modal')
-      .modal('show')
-    ;    
-
-    $('#edit-' + `${modal}` + '-modal #new-form-priority-dropdown')
-      .dropdown()
-    ;
-
-    $('.ui.checkbox')
-      .checkbox()
-    ;
-
-    $('.ui.calendar').calendar({
-      type: 'date'
-    });
-
-    for (const toggle of initFormToggles(modal)) {
-      toggle();
-    };
-
-    addConfirmClickEvents();
-
-    function addConfirmClickEvents() {
-      if (modal === 'project') {
-        const projectConfirmBtn = document.querySelector('#edit-project-modal .actions .positive');
-        projectConfirmBtn.addEventListener('click', () => {
-          const editModal = document.getElementById('edit-' + `${modal}` + '-modal');
-          const project = editModal.form.project;
-          const formData = getEditFormData('project');
-          
-          project.setProperties(formData);
-        });
-      } else if (modal === 'task') {
-        const taskConfirmBtn = document.querySelector('#edit-task-modal .actions .positive');
-        taskConfirmBtn.addEventListener('click', () => {
-          const editModal = document.getElementById('edit-' + `${modal}` + '-modal');
-          const task = editModal.form.task;
-          const formData = getEditFormData('task');
-          
-          task.setProperties(formData);
-        });
-      };
-    };
-
-    function initFormToggles(modal) {
-      const modalId = '#edit-' + `${modal}` + '-modal'
-      function initDueDateToggle() {
-        const fieldId = '#new-form-dueDateField';
-        const toggleId = '#new-form-dueDateToggle';
-        const dueDateToggle = document.querySelector(modalId + ' ' + toggleId);
-        dueDateToggle.classList.remove('hidden');
-        dueDateToggle.onclick = () => {
-          const dueDateField = document.querySelector(modalId + ' ' + fieldId);
-          if (dueDateToggle.checked) {
-            dueDateField.classList.remove('disabled');
-          } else {
-            dueDateField.classList.add('disabled');
-          };
-        };
-      };
-
-      function initDateStartedToggle() {
-        const fieldId = '#new-form-dateStartedField';
-        const toggleId = '#new-form-dateStartedToggle';
-        const dateStartedToggle = document.querySelector(modalId + ' ' + toggleId);
-        dateStartedToggle.classList.remove('hidden');
-        dateStartedToggle.onclick = () => {
-          const dateStartedField = document.querySelector(modalId + ' ' + fieldId);
-          if (dateStartedToggle.checked) {
-            dateStartedField.classList.add('disabled');
-          } else {
-            dateStartedField.classList.remove('disabled');
-          };
-        };
-      };
-
-      return [initDueDateToggle, initDateStartedToggle]
-    };
   };
 
   return { getProjectPage }
