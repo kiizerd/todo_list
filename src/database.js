@@ -29,56 +29,82 @@ const Database = (function() {
     return projects
   };
 
-  function getStoredCompleted() {
+  function getCompleted() {
     const localStorage = JSON.parse(window.localStorage.getItem('StorageObject'));
 
-    const completed = localStorage.completed
+    const completed = localStorage.completed;
 
     return completed.length ? completed : null;
-  }
+  };
+  
+  
+  EventAggregator.subscribe('projectFromStorage', projectObj => {
+    projectObj.tasks = projects[projectObj.title].tasks;
+
+    projects[projectObj.title] = projectObj;
+  });
+
+  
+  EventAggregator.subscribe('tasksFromStorage', args => {
+    const newTaskList = args[0];
+    const project = args[1];
+
+    projects[project] = { tasks: newTaskList };
+  });
+
 
   function loadStorage() {
     const storedProjects = getStoredProjects();
-    const storedCompleted = getStoredCompleted();
+    const storedCompleted = getCompleted();
 
-    loadProjects(storedProjects);
-
-    if (storedCompleted) loadProjects(storedCompleted);
-    
-    function loadProjects(list) {
-      if (Object.entries(list).length) {
-        for (const project in list) {
-          const current = list[project];     
-          
-          if (current.tasks.length) {
-            const newTaskList = current.tasks.map(task => {
-              EventAggregator.subscribe('taskFromStorage', newTask => {
-                task = newTask;
-              });
-              
-              EventAggregator.publish('storedTaskToTask', task);
-              
-              return task
-            });
-  
-            current.tasks = newTaskList
-          };
-  
-          EventAggregator.subscribe('projectFromStorage', projectObj => {
-            if (list === storedProjects) {
-              projects[projectObj.title] = projectObj;
-            } else {
-              completedProjects[projectOjb.title] = projectObj;
-            };
-          });
-  
-          EventAggregator.publish('storedProjectToProject', current);
-  
-        };
-      };
+    if (storedCompleted && storedCompleted.projects) {
+      loadFrom(storedCompleted.projects);
     };
 
-  };
+    if (storedCompleted && storedCompleted.tasks) {
+      loadFrom(storedCompleted.tasks);
+    };
+    
+    loadFrom(storedProjects);
+    
+    function loadFrom(source) {
+      if (Object.entries(source).length) {
+
+        for (const item in source) {
+          const current = source[item];
+
+          switch (source) {
+            case storedProjects:
+              
+              if (current.tasks.length) {
+                EventAggregator.publish('storedTasksToTasks', [
+                  current.tasks, 
+                  current.title
+                ]);
+              };
+              
+              EventAggregator.publish('storedProjectToProject', current);
+              
+              break;
+
+            case storedCompleted.projects:
+
+              completed.projects[current.title] = current;
+
+              break;
+
+            case storedCompleted.tasks:
+
+              completed.tasks[current.title] = current;
+
+              break;
+          };
+          
+          };
+        };
+    };
+
+};
   
   function setupStorage() {
     window.localStorage.setItem('StorageObject', JSON.stringify({
@@ -231,15 +257,38 @@ const Database = (function() {
     return result
   };
 
+
   EventAggregator.subscribe('requestProjects', options => {
     const reqProjects = Object.values(projects);
-    console.log('reqProjects', reqProjects);
+    
     const filtered = filterProjects(options.filter, reqProjects);
     const sorted = sortProjects(options.sort, filtered);
 
     if (options._token) sorted._token = options._token;
 
     EventAggregator.publish('projectsReceipt', sorted);
+  });
+
+
+  EventAggregator.subscribe('requestCompletedTasks', options => {    
+    const tasks = Object.values(completed.tasks);
+
+    result = { tasks };
+
+    if (options._token) result._token = options._token;
+
+    EventAggregator.publish('completedTasksReceipt', result);
+  });
+
+
+  EventAggregator.subscribe('requestCompletedProjects', options => {    
+    const projects = Object.values(completed.projects);
+
+    result = { projects };
+
+    if (options._token) result._token = options._token;
+
+    EventAggregator.publish('completedProjectsReceipt', result);
   });
   
   return { initStorage }
