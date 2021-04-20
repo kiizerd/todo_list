@@ -64,10 +64,14 @@ const taskInterface = (function() {
   });
 
   
-  EventAggregator.subscribe('storedTaskToTask', storedTask => {
-    const newTask = new Task(storedTask);
+  EventAggregator.subscribe('storedTasksToTasks', args => {
+    const newTaskList = [];
 
-    EventAggregator.publish('taskFromStorage', newTask);
+    for (const task of args[0]) {
+      newTaskList.push(new Task(task));
+    };
+    
+    EventAggregator.publish('tasksFromStorage', [newTaskList, args[1]]);
   });
 
 })();
