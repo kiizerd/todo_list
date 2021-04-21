@@ -796,11 +796,82 @@ const Generator = (function() {
     return card;
   };
 
+  function createTable() {
+    const table = document.createElement('table');
+    table.classList.add('ui', 'basic', 'inverted', 'table');
+    table.id = 'history-table';
+
+    const tableHeader = getTableHeader();
+    const tableBody = getTableBody();
+    const tableFooter = getTableFooter();
+
+    table.append(tableHeader, tableBody, tableFooter);
+
+    return table
+
+    function getTableHeader() {
+      const header = document.createElement('thead');
+      const row = document.createElement('tr');
+
+      const columnHeaders = getColumnHeaders();
+
+      for (const th of columnHeaders) {
+        row.append(th);
+      };
+
+      header.append(row);
+
+      return header
+
+      function getColumnHeaders() {
+        const titleHead = document.createElement('th');
+        titleHead.textContent = "Title";
+
+        const priorityHead = document.createElement('th');
+        priorityHead.textContent = 'Priority';
+
+        const descHead = document.createElement('th');
+        descHead.textContent = 'Description';
+
+        const startedHead = document.createElement('th');
+        startedHead.textContent = 'Started on';
+
+        const dueHead = document.createElement('th');
+        dueHead.textContent = 'Due on';
+
+        return [titleHead, priorityHead, descHead, startedHead, dueHead]
+      };
+    };
+
+    function getTableBody() {
+      const tableBody = document.createElement('tbody');
+      tableBody.id = 'history-table-body';
+
+      return tableBody;
+    };
+
+    function getTableFooter() {
+      const tableFooter = document.createElement('tfoot');
+      const row = document.createElement('tr');
+
+      const projectsCount = document.createElement('th');
+      projectsCount.id = 'history-table-projects-count';
+
+      row.append(projectsCount);
+
+      tableFooter.append(row);
+
+      return tableFooter
+    };
+
+  };
+
   return {
     createProjectCard,
     createProjectPage,
     createTaskCard,
     createSegment,
+    createTable,
     createModal,
     createForm,
   }
