@@ -798,12 +798,17 @@ const Generator = (function() {
 
   function createTable() {
     const table = document.createElement('table');
-    table.classList.add('ui', 'basic', 'inverted', 'table');
+    table.classList.add('ui', 'selectable', 'inverted', 'table');
     table.id = 'history-table';
 
     const tableHeader = getTableHeader();
+    table.header = tableHeader;
+
     const tableBody = getTableBody();
+    table.body = tableBody;
+
     const tableFooter = getTableFooter();
+    table.footer = tableFooter;
 
     table.append(tableHeader, tableBody, tableFooter);
 
@@ -825,18 +830,22 @@ const Generator = (function() {
 
       function getColumnHeaders() {
         const titleHead = document.createElement('th');
+        titleHead.classList.add('center', 'aligned');
         titleHead.textContent = "Title";
 
         const priorityHead = document.createElement('th');
         priorityHead.textContent = 'Priority';
 
         const descHead = document.createElement('th');
+        descHead.classList.add('center', 'aligned');
         descHead.textContent = 'Description';
 
         const startedHead = document.createElement('th');
-        startedHead.textContent = 'Started on';
+        startedHead.classList.add('right', 'aligned')
+        startedHead.textContent = 'Began on';
 
         const dueHead = document.createElement('th');
+        dueHead.classList.add('right', 'aligned')
         dueHead.textContent = 'Due on';
 
         return [titleHead, priorityHead, descHead, startedHead, dueHead]
@@ -855,6 +864,7 @@ const Generator = (function() {
       const row = document.createElement('tr');
 
       const projectsCount = document.createElement('th');
+      projectsCount.colSpan = '5';
       projectsCount.id = 'history-table-projects-count';
 
       row.append(projectsCount);
