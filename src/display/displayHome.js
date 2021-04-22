@@ -139,13 +139,13 @@ const Display = (function() {
       div.textContent = 'Priority: '
 
       const span = document.createElement('span');
-      if (priority === 0) {
+      if (priority === 1) {
         span.classList.add('ui', 'error', 'text');
         span.textContent = 'High';
-      } else if (priority === 1) {
+      } else if (priority === 2) {
         span.classList.add('ui', 'info', 'text');
         span.textContent = 'Normal';
-      } else if (priority === 2) {
+      } else if (priority === 3) {
         span.classList.add('ui', 'success', 'text');
         span.textContent = 'Low';
       }
