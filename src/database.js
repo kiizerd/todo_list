@@ -18,7 +18,7 @@ const Database = (function() {
 
     setTimeout(() => {
       updateStorage();
-    }, 150);
+    }, 75);
     
   };
 
@@ -115,11 +115,11 @@ const Database = (function() {
       }));
 
       EventAggregator.publish('storageUpdated', []);
-    }, 100);    
+    }, 50);    
 
     setTimeout(() => {
       EventAggregator.publish('updateDisplay', []);
-    }, 200);
+    }, 100);
   };
 
   
@@ -166,8 +166,6 @@ const Database = (function() {
     const task = args[0];
     const project = args[1];
 
-    console.log(task, project);
-
     updateStorage();
   });
 
@@ -188,15 +186,20 @@ const Database = (function() {
     const task = args[0];
     const project = args[1];
 
-    console.log(task, project);
-
     task.project = project
 
     completed.tasks[task.title] = task
 
     setTimeout(() => {
       updateStorage();
-    }, 150);
+    }, 75);
+  });
+
+
+  EventAggregator.subscribe('clearHistory', () => {
+    completed.projects = {};
+
+    updateStorage();
   });
 
 
