@@ -15,6 +15,11 @@ const Database = (function() {
     } else {
       setupStorage();
     };
+
+    setTimeout(() => {
+      updateStorage();
+    }, 150);
+    
   };
 
   function checkForStorage() {
@@ -26,20 +31,30 @@ const Database = (function() {
     
     const projects = localStorage.projects
 
-    return projects
+    return projects ? projects : null;
   };
 
-  function getCompleted() {
+  function getCompletedProjects() {
     const localStorage = JSON.parse(window.localStorage.getItem('StorageObject'));
 
-    const completed = localStorage.completed;
+    const completed = localStorage.completed.projects;
 
-    return completed.length ? completed : null;
+    return completed ? completed : null;
+  };
+
+  function getCompletedTasks() {
+    const localStorage = JSON.parse(window.localStorage.getItem('StorageObject'));
+
+    const completed = localStorage.completed.tasks;
+
+    return completed ? completed : null;
   };
   
   
   EventAggregator.subscribe('projectFromStorage', projectObj => {
-    projectObj.tasks = projects[projectObj.title].tasks;
+    if (projects[projectObj.title]) {
+      projectObj.tasks = projects[projectObj.title].tasks;
+    };
 
     projects[projectObj.title] = projectObj;
   });
@@ -54,57 +69,37 @@ const Database = (function() {
 
 
   function loadStorage() {
-    const storedProjects = getStoredProjects();
-    const storedCompleted = getCompleted();
+    const storage = [
+      getStoredProjects(),
+      getCompletedProjects(),
+      getCompletedTasks()
+    ];
 
-    if (storedCompleted && storedCompleted.projects) {
-      loadFrom(storedCompleted.projects);
-    };
+    for (const stored of storage) {
+      if (stored) {
+        for (const object in stored) {
+          if (stored === storage[0]) {
+            
+            if (stored[object].tasks && stored[object].tasks.length) {
+              EventAggregator.publish('storedTasksToTasks', [
+                stored[object].tasks, 
+                stored[object].title
+              ]);
+            };
+            
+            EventAggregator.publish('storedProjectToProject', stored[object]);
 
-    if (storedCompleted && storedCompleted.tasks) {
-      loadFrom(storedCompleted.tasks);
-    };
-    
-    loadFrom(storedProjects);
-    
-    function loadFrom(source) {
-      if (Object.entries(source).length) {
-
-        for (const item in source) {
-          const current = source[item];
-
-          switch (source) {
-            case storedProjects:
-              
-              if (current.tasks.length) {
-                EventAggregator.publish('storedTasksToTasks', [
-                  current.tasks, 
-                  current.title
-                ]);
-              };
-              
-              EventAggregator.publish('storedProjectToProject', current);
-              
-              break;
-
-            case storedCompleted.projects:
-
-              completed.projects[current.title] = current;
-
-              break;
-
-            case storedCompleted.tasks:
-
-              completed.tasks[current.title] = current;
-
-              break;
+          } else if (stored === storage[1]) {
+            completed.projects[stored[object].title] = stored[object];
+          } else if (stored === storage[2]) {
+            completed.tasks[stored[object].title] = stored[object];
           };
-          
-          };
+
         };
+      };
     };
-
-};
+    
+  };
   
   function setupStorage() {
     window.localStorage.setItem('StorageObject', JSON.stringify({
@@ -124,7 +119,7 @@ const Database = (function() {
 
     setTimeout(() => {
       EventAggregator.publish('updateDisplay', []);
-    }, 200);    
+    }, 200);
   };
 
   
@@ -190,8 +185,8 @@ const Database = (function() {
 
   
   EventAggregator.subscribe('taskCompleted', args => {
-    const task = args.task;
-    const project = args.project;
+    const task = args[0];
+    const project = args[1];
 
     console.log(task, project);
 
@@ -221,7 +216,7 @@ const Database = (function() {
   //   }
   // }
 
-  function filterProjects(options, ary) {
+  function filter(options, ary) {
     let result;
     if (options) {
       console.log('filter options', options);
@@ -233,7 +228,7 @@ const Database = (function() {
     return result ? result : [];
   };
 
-  function sortProjects(options, ary) {
+  function sort(options, ary) {
     let result
     if (options) {
       console.log('sort options', options);
@@ -257,23 +252,35 @@ const Database = (function() {
     return result
   };
 
+  function getList(list, options) {
+    let result
+    switch (list) {
+      case 'projects':
+        result = Object.values(projects);
+        break;
+      case 'completedProjects':
+        result = Object.values(completed.projects);
+        break;
+      case 'completedTasks':
+        result = Object.values(completed.tasks);
+        break;
+    };
+
+    return sort(options.sort, filter(options.filter, result));
+  };
+
 
   EventAggregator.subscribe('requestProjects', options => {
-    const reqProjects = Object.values(projects);
-    
-    const filtered = filterProjects(options.filter, reqProjects);
-    const sorted = sortProjects(options.sort, filtered);
+    const result = getList('projects', options);
 
-    if (options._token) sorted._token = options._token;
+    if (options._token) result._token = options._token;
 
-    EventAggregator.publish('projectsReceipt', sorted);
+    EventAggregator.publish('projectsReceipt', result);
   });
 
 
-  EventAggregator.subscribe('requestCompletedTasks', options => {    
-    const tasks = Object.values(completed.tasks);
-
-    result = { tasks };
+  EventAggregator.subscribe('requestCompletedTasks', options => {
+    const result = getList('completedTasks', options);
 
     if (options._token) result._token = options._token;
 
@@ -282,9 +289,7 @@ const Database = (function() {
 
 
   EventAggregator.subscribe('requestCompletedProjects', options => {    
-    const projects = Object.values(completed.projects);
-
-    result = { projects };
+    const result = getList('completedProjects', options);
 
     if (options._token) result._token = options._token;
 
