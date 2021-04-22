@@ -7,12 +7,15 @@
  ---
 
   #### W.I.P.
+  
+  - Users
+    - New user, delete user
+    - Login, logout
+    - User partioned storage to keep projects separate
 
-  - History Page
+  - History page
+    - Show completed tasks
     
-  - User Page
-
-  - Empty List Prompt
  ---
 
   Data from users is stored using the browsers LocalStorage API.  
