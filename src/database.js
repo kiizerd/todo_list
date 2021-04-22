@@ -37,6 +37,8 @@ const Database = (function() {
   function getCompletedProjects() {
     const localStorage = JSON.parse(window.localStorage.getItem('StorageObject'));
 
+    if (!localStorage.completed) return null
+
     const completed = localStorage.completed.projects;
 
     return completed ? completed : null;
@@ -45,7 +47,10 @@ const Database = (function() {
   function getCompletedTasks() {
     const localStorage = JSON.parse(window.localStorage.getItem('StorageObject'));
 
+    if (!localStorage.completed) return null
+
     const completed = localStorage.completed.tasks;
+    
 
     return completed ? completed : null;
   };
