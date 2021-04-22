@@ -32,6 +32,21 @@ const Display = (function() {
         div.append(column);
       };
 
+      setTimeout(() => {
+        if (!projectCards.length) {
+          $(div).append(
+            $("<img></img>").attr('src', '../../media/storage_empty.png')
+              .css({"margin": "2rem auto 2rem auto"})
+          );
+
+          $(div).parent().append(
+            getDemoProjectBtn()
+          );
+
+        }
+      }, 375);
+
+
       return div
 
       function getColumn() {
@@ -286,6 +301,54 @@ const Display = (function() {
     animBtn.append(visibleBtn, hiddenBtn);
 
     return animBtn
+  };
+
+  function getDemoProjectBtn() {
+    const btn = $("<div></div>")
+      .addClass("ui secondary left floated button")
+      .attr('id', 'demo-project-btn')
+      .text('Demo projects')
+      .on('click', function() {
+        demoProjects();
+      });
+
+
+    return btn
+
+    function demoProjects() {
+
+      EventAggregator.publish('createProject', {
+        title: 'General',
+        description: 'A non-specific list of generic tasks.',
+        priority: 2,
+        dates: {
+          started: '',
+          due: ''
+        }
+      });
+
+      EventAggregator.publish('createProject', {
+        title: 'Work',
+        description: 'Tasks that need to be completed for your job.',
+        priority: 0,
+        dates: {
+          started: '',
+          due: new Date(2021, 4, 20)
+        }
+      });
+
+      EventAggregator.publish('createProject', {
+        title: 'House',
+        description: 'A list of household chores and duties.',
+        priority: 1,
+        dates: {
+          started: '',
+          due: ''
+        }
+
+      });
+
+    };
   };
   
   return { getHomePage }
