@@ -1,6 +1,7 @@
 @import './newProjectModal.css';
 @import './homePage.css';
 @import './projectPage.css';
+@import './historyPage.css';
 
 html, body {
   scrollbar-color: #666 slategray;
