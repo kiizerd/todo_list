@@ -41,10 +41,10 @@ const projectInterface = (function() {
     completeTask(taskName) {
       const task = this.getTask(taskName);
 
-      EventAggregator.publish('taskCompleted', {
-        task: task,
-        project: this
-      });
+      EventAggregator.publish('taskCompleted', [
+        task,
+        this
+      ]);
 
       task.completeTask();
 
@@ -121,7 +121,6 @@ const projectInterface = (function() {
 
 
   EventAggregator.subscribe('storedProjectToProject', storedProject => {
-    console.log(storedProject);
 
     const newProject = new Project(storedProject);
 
