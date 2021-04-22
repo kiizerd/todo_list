@@ -80,8 +80,8 @@ const Display = (function() {
       function fillPriority() {
         const priority = project.priority;
         const prioritySpan = segment.priority;
-        const priorityClass = priority === 2 ? 'success' : priority === 1 ? 'info' : 'error';
-        const priorityText = priority === 2 ? 'Low' : priority === 1 ? 'Normal' : 'High';
+        const priorityClass = priority === 3 ? 'success' : priority === 2 ? 'info' : 'error';
+        const priorityText = priority === 3 ? 'Low' : priority === 2 ? 'Normal' : 'High';
         prioritySpan.classList.add(priorityClass, 'ui', 'text');
         prioritySpan.textContent = priorityText;
       };
