@@ -8,6 +8,10 @@
   margin: 1em;
 }
 
+#demo-project-btn {
+  margin: 1em;
+}
+
 .homepage-project-card .inverted.segment {
   font-size: 12px;
 }
