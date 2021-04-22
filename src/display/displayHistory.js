@@ -57,7 +57,6 @@ const Display = (function() {
 
     if (projects.length > 0) {
       fillTable(projects);
-  
       
       if (projects.length === 1) {
         table.footer
@@ -93,6 +92,7 @@ const Display = (function() {
 
         const rowDesc = document.createElement('td');
         rowDesc.textContent = project.description;
+        rowDesc.classList.add('center', 'aligned');
 
         const rowStarted = document.createElement('td');
         rowStarted.classList.add('right',  'aligned');
@@ -100,7 +100,11 @@ const Display = (function() {
 
         const rowDue = document.createElement('td');
         rowDue.classList.add('right',  'aligned');
-        rowDue.textContent = project.dates.due;
+        if (project.dates.due) {
+          rowDue.textContent = project.dates.due;
+        } else {
+          rowDue.textContent = 'N/A';
+        }
 
         row.append(rowTitle, rowPriority, rowDesc, rowStarted, rowDue);
 
@@ -144,10 +148,61 @@ const Display = (function() {
       return message
     };
   };
+    
+  function getClearHistoryBtn() {
+    const btn = document.createElement('div');
+    $(btn).addClass('ui animated fade button secondary right floated')
+      .css({'margin': '1rem auto 2rem auto'})
+      .append(
+        $('<div></div>').addClass('visible content').text('Clear history'),
+        $('<div></div>').addClass('hidden content').append(
+          $('<i></i>').addClass('trash alternate outline icon')
+        ))
+      .on('click', function () {
+        $('body')
+          .toast({
+            message: 'Clear your history of completed projects? ' +
+              `\n` + 'This action is irreverisble',
+            class: 'warning',
+            position: 'top center',
+            displayTime: 3000,
+            showProgress: 'left',
+            classActions: 'vertical',
+            classProgress: 'red',
+            actions: [{
+              text: 'Confirm',
+              class: 'blue',
+              click: function () {
 
-  return { getTable }
+                EventAggregator.publish('clearHistory', {});
+
+              }
+            }, {
+              icon: 'ban',
+              class: 'icon red'
+            }]
+          })
+      })
+
+    return btn
+  };
+
+  function getHistoryPage() {
+    const page = document.createElement('div');
+    page.classList.add('ui', 'container');
+
+    const table = getTable();
+
+    const clearHistoryBtn = getClearHistoryBtn();
+
+    page.append(table, clearHistoryBtn);
+
+    return page
+  }
+  
+  return { getHistoryPage }
 })()
 
-const getHistoryPage = Display.getTable
+const getHistoryPage = Display.getHistoryPage
 
 export { getHistoryPage }
