@@ -33,6 +33,7 @@ const Display = (function() {
     };
   });
 
+  addNewProjectEvent();
 
   function updateMenu() {
     const reqToken = new Token('requestProjects', 'displayHeader');
@@ -58,6 +59,9 @@ const Display = (function() {
     for (const project of projects) {
       addProjectToMenu(project.title);
     };
+    
+    addClickEvents();
+
   }; 
 
   function addProjectToMenu(projectName) {
@@ -75,8 +79,6 @@ const Display = (function() {
     }
     
     projectsMenu.append(newProjectItem);
-    
-    addClickEvents();
   }
 
   function addClickEvents() {
@@ -103,9 +105,9 @@ const Display = (function() {
     btn.onclick = () => EventAggregator.publish('newProjectClicked', btn);
   }
 
-  return { addNewProjectEvent }
+  return { }
 })();
 
-const addNewProjectEvent = Display.addNewProjectEvent;
+const Header = Display;
 
-export { addNewProjectEvent };
+export { Header };
