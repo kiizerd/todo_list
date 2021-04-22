@@ -52,5 +52,5 @@ body {
 }
 
 #footer .right.rail {
-  justify-content: end;
+  justify-content: flex-end;
 }

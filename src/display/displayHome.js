@@ -35,7 +35,10 @@ const Display = (function() {
       setTimeout(() => {
         if (!projectCards.length) {
           $(div).append(
-            $("<img></img>").attr('src', '../../media/storage_empty.png')
+            $("<img></img>").attr({
+              'src': '../../media/storage_empty.png',
+              'type': 'png'
+            })
               .css({"margin": "2rem auto 2rem auto"})
           );
 
