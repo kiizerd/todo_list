@@ -348,15 +348,15 @@ const Generator = (function() {
 
           const low = document.createElement('option');
           low.textContent = 'Low';
-          low.value = '2';
+          low.value = '3';
           
           const normal = document.createElement('option');
           normal.textContent = 'Normal';
-          normal.value = '1';
+          normal.value = '2';
 
           const high = document.createElement('option');
           high.textContent = 'High';
-          high.value = '0';
+          high.value = '1';
 
           return [label, high, normal, low]
         };
@@ -580,11 +580,9 @@ const Generator = (function() {
             description: ['minLength[8]', 'empty']
           },
           onSuccess: function (event, fields) {
-            console.log('i am valid')
             this.valid = true;
           },
           onFailure: function (formErrors, fields) {
-            console.log('i am invalid')
             this.valid = false;
           }
         })
