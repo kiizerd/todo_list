@@ -7,7 +7,7 @@ const projectInterface = (function() {
     constructor(formData) {
       this.title = formData.title;
       this.description = formData.description;
-      this.priority = formData.priority ? parseInt(formData.priority) : 1;
+      this.priority = formData.priority ? parseInt(formData.priority) : 2;
       
       const dueDate = formData.dates.due;
       const startDate = formData.dates.started;
@@ -88,6 +88,8 @@ const projectInterface = (function() {
       } else {
         for (const task of this.tasks) {
 
+          console.log('completing task', task, this);
+
           EventAggregator.publish('taskCompleted', [task, this]);
 
         };
@@ -119,6 +121,8 @@ const projectInterface = (function() {
 
 
   EventAggregator.subscribe('storedProjectToProject', storedProject => {
+    console.log(storedProject);
+
     const newProject = new Project(storedProject);
 
     EventAggregator.publish('projectFromStorage', newProject);
