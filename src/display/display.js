@@ -1,7 +1,8 @@
 import { EventAggregator } from '../events';
-import { addNewProjectEvent } from './displayHeader';
+import { getHistoryPage } from './displayHistory';
 import { getHomePage } from './displayHome';
 import { Project } from './displayProject';
+import { Header } from './displayHeader';
 import { Modal } from './displayModal';
 
 const Display = (function() {
@@ -10,7 +11,7 @@ const Display = (function() {
 
   function init() {
     Modal;
-    addNewProjectEvent()
+    Header;
     setActivePage('home');
     content.setActivePage = setActivePage
   };
@@ -48,8 +49,7 @@ const Display = (function() {
   EventAggregator.subscribe('updateDisplay', () => {
     setActivePage(content.activePage);
   });
-
-  function getHistoryPage() {}
+  
 
   return { init }
 })();
