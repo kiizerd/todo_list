@@ -11,11 +11,9 @@ const init = [
   Controller
 ];
 
+Display.init();
 
 Database.initStorage();
-
-
-Display.init();
 
 function demoProjects() {
 
