@@ -219,7 +219,7 @@ const Display = ((function iife() {
       sort: {
         byName: 'desc',
       },
-      _token: requestToken,
+      token: requestToken,
     };
     EventAggregator.publish('requestProjects', requestObj);
 

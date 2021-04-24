@@ -4,7 +4,7 @@ import { EventAggregator, Token } from '../events/events';
 const taskInterface = ((function iife() {
   const reqToken = new Token('primedProjects', 'taskInterface');
 
-  const reqObject = { _token: reqToken };
+  const reqObject = { token: reqToken };
 
   let primedProject;
   EventAggregator.subscribe('primedProjectReceipt', (project) => {
