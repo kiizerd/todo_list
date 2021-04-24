@@ -9,11 +9,13 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "webpack": "^5.28.0",
+    "eslint": "^7.25.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "webpack": "^5.35.1",
     "webpack-cli": "^4.6.0"
   },
   "dependencies": {
-    "date-fns": "^2.19.0",
-    "fomantic-ui": "^2.8.7"
+    "date-fns": "^2.21.1"
   }
 }
