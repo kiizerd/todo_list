@@ -1,91 +1,19 @@
-import { EventAggregator } from "./events";
+const Generator = ((function iife() {
+  function createSegment() {
+    const segment = document.createElement('div');
+    segment.classList.add('ui', 'grey', 'inverted', 'segment');
 
-const Generator = (function() {
-  
-  function createProjectCard() {
-    const card = document.createElement('div');
-    card.classList.add('ui', 'inverted', 'card');
-
-    const cardFirstContent = getCardFirstContent();
-    card.firstContent = cardFirstContent;
-
-    function getCardFirstContent() {
-      const cardContent = document.createElement('div');
-      cardContent.classList.add('content');
-      
-      const cardHeader = getCardHeader();
-      card.header = cardHeader.span;
-      card.buttons = cardHeader.buttons;
-
-      const cardMeta = getCardMeta();
-      card.meta = cardMeta;
-
-      const cardDesc = getCardDesc();
-      card.desc = cardDesc;
-
-      cardContent.append(cardHeader, cardMeta, cardDesc);
-
-      return cardContent
-      
-      function getCardHeader() {
-        const header = document.createElement('div');
-        header.classList.add('header');
-
-        const buttons = createHeaderBtns();
-        const span = document.createElement('span');
-        const divider = getCardHeaderDivider();
-        header.span = span;
-        header.buttons = buttons;
-
-        header.append(buttons, span, divider);
-        
-        return header
-
-        function getCardHeaderDivider() {
-          const divider = document.createElement('div');
-          divider.classList.add('ui', 'inverted', 'right', 'aligned', 'divider')
-
-          return divider
-        };
-      };
-
-      function getCardMeta() {
-        const meta = document.createElement('div');
-        meta.classList.add('meta');
-
-        return meta
-      };
-      
-      function getCardDesc() {
-        const desc = document.createElement('div');
-        desc.classList.add('description');
-        
-        return desc
-      };
-    }
-
-    card.append(cardFirstContent);
-
-    return card
-  };
+    return segment;
+  }
 
   function createHeaderBtns() {
     const btnGroup = document.createElement('div');
     btnGroup.classList.add('ui', 'icon', 'buttons', 'right', 'floated');
-    
-    const completeBtn = getCompleteBtn()
-    const editBtn = getEditBtn();
-    const deleteBtn = getDeleteBtn();
-    
-    btnGroup.append(completeBtn, editBtn, deleteBtn);
-
-    return btnGroup
 
     function getCompleteBtn() {
       const completeBtn = document.createElement('button');
-      completeBtn.classList.add('mini', 'ui', 'button', 'green',
-                                'cardHeader-completeBtn', 'inverted');
-      
+      completeBtn.classList.add('mini', 'ui', 'button', 'green', 'cardHeader-completeBtn', 'inverted');
+
       const completeIcon = document.createElement('i');
       completeIcon.classList.add('check', 'square', 'icon');
 
@@ -96,7 +24,7 @@ const Generator = (function() {
             position: 'top center',
             showProgress: 'bottom',
             displayTime: 1600,
-            message: completeBtn.masterObject.header.textContent + ' complete!!',
+            message: `${completeBtn.masterObject.header.textContent} complete!!`,
             class: 'green inverted',
             classActions: 'basic left',
             closeOnClick: true,
@@ -104,26 +32,26 @@ const Generator = (function() {
               text: 'Undo?',
               class: 'ui right labeled icon button black inverted',
               icon: 'undo',
-              click: function() { undo = true; }
+              click: () => { undo = true; },
             }],
             onHide: () => {
               if (!undo) {
                 completeBtn.masterObject.completeSelf();
-              };
-            }
-          })
-        ;
+              }
+            },
+          });
       });
-  
+
       completeBtn.append(completeIcon);
 
-      return completeBtn
-    };
+      return completeBtn;
+    }
+
+    const completeBtn = getCompleteBtn();
 
     function getEditBtn() {
       const editBtn = document.createElement('button');
-      editBtn.classList.add('mini', 'ui', 'button', 'blue',
-                            'cardHeader-editBtn', 'inverted');
+      editBtn.classList.add('mini', 'ui', 'button', 'blue', 'cardHeader-editBtn', 'inverted');
 
       const editIcon = document.createElement('i');
       editIcon.classList.add('edit', 'icon');
@@ -134,13 +62,14 @@ const Generator = (function() {
 
       editBtn.append(editIcon);
 
-      return editBtn
-    };
+      return editBtn;
+    }
+
+    const editBtn = getEditBtn();
 
     function getDeleteBtn() {
       const deleteBtn = document.createElement('button');
-      deleteBtn.classList.add('mini', 'ui', 'button', 'red',
-                              'cardHeader-deleteBtn', 'inverted');
+      deleteBtn.classList.add('mini', 'ui', 'button', 'red', 'cardHeader-deleteBtn', 'inverted');
 
       const deleteIcon = document.createElement('i');
       deleteIcon.classList.add('trash', 'alternate', 'outline', 'icon');
@@ -152,7 +81,7 @@ const Generator = (function() {
             position: 'top center',
             showProgress: 'bottom',
             displayTime: 2000,
-            message: 'Deleting ' + deleteBtn.masterObject.header.textContent + '...',
+            message: `Deleting ${deleteBtn.masterObject.header.textContent}...`,
             class: 'red inverted',
             classActions: 'basic left',
             closeOnClick: true,
@@ -160,82 +89,143 @@ const Generator = (function() {
               text: 'Undo?',
               class: 'ui right labeled icon button black inverted',
               icon: 'undo',
-              click: function() { undo = true; }
+              click: () => { undo = true; },
             }],
             onHide: () => {
               if (!undo) {
                 deleteBtn.masterObject.deleteSelf();
-              };
-            }
-          })
-        ;
+              }
+            },
+          });
       });
-        
+
       deleteBtn.append(deleteIcon);
 
-      return deleteBtn
-    };
+      return deleteBtn;
+    }
 
-  };
+    const deleteBtn = getDeleteBtn();
+
+    btnGroup.append(completeBtn, editBtn, deleteBtn);
+
+    return btnGroup;
+  }
+
+  function createProjectCard() {
+    const card = document.createElement('div');
+    card.classList.add('ui', 'inverted', 'card');
+
+    function getCardFirstContent() {
+      const cardContent = document.createElement('div');
+      cardContent.classList.add('content');
+
+      function getCardHeader() {
+        const header = document.createElement('div');
+        header.classList.add('header');
+
+        const buttons = createHeaderBtns();
+        const span = document.createElement('span');
+
+        function getCardHeaderDivider() {
+          const divider = document.createElement('div');
+          divider.classList.add('ui', 'inverted', 'right', 'aligned', 'divider');
+
+          return divider;
+        }
+
+        const divider = getCardHeaderDivider();
+        header.span = span;
+        header.buttons = buttons;
+
+        header.append(buttons, span, divider);
+
+        return header;
+      }
+
+      const cardHeader = getCardHeader();
+      card.header = cardHeader.span;
+      card.buttons = cardHeader.buttons;
+
+      function getCardMeta() {
+        const meta = document.createElement('div');
+        meta.classList.add('meta');
+
+        return meta;
+      }
+
+      const cardMeta = getCardMeta();
+      card.meta = cardMeta;
+
+      function getCardDesc() {
+        const desc = document.createElement('div');
+        desc.classList.add('description');
+
+        return desc;
+      }
+
+      const cardDesc = getCardDesc();
+      card.desc = cardDesc;
+
+      cardContent.append(cardHeader, cardMeta, cardDesc);
+
+      return cardContent;
+    }
+
+    const cardFirstContent = getCardFirstContent();
+    card.firstContent = cardFirstContent;
+
+    card.append(cardFirstContent);
+
+    return card;
+  }
 
   function createModal() {
     const modal = document.createElement('div');
     modal.classList.add('ui', 'inverted', 'modal');
 
-    const modalHeader = modal.header = getModalHeader();    
-
-    const modalContent = modal.content = getModalContent();    
-    
-    const modalActions = modal.actions = getModalActions();
-
-    modal.append(modalHeader, modalContent, modalActions);
-
-    return modal
-
     function getModalHeader() {
       const modalHeader = document.createElement('div');
       modalHeader.classList.add('header');
-      
-      return modalHeader
-    };
+
+      return modalHeader;
+    }
+
+    const modalHeader = getModalHeader();
+    modal.header = modalHeader;
 
     function getModalContent() {
       const modalContent = document.createElement('div');
       modalContent.classList.add('content');
 
-      return modalContent
-    };
+      return modalContent;
+    }
+
+    const modalContent = getModalContent();
+    modal.content = modalContent;
 
     function getModalActions() {
       const modalActions = document.createElement('div');
       modalActions.classList.add('actions');
 
-      const cancelBtn = getCancelBtn();
-      const confirmBtn = getConfirmBtn();
-
-      modalActions.append(cancelBtn, confirmBtn);
-
-      return modalActions
-
       function getCancelBtn() {
         const cancelBtn = document.createElement('div');
-        cancelBtn.classList.add('ui', 'red', 'inverted', 'right', 'labeled',
-                                'icon', 'deny', 'button');
+        cancelBtn.classList.add('ui', 'red', 'inverted', 'right', 'labeled', 'icon', 'deny', 'button');
 
         cancelBtn.textContent = 'Cancel';
 
-        const timesIcon = document.createElement('i')
+        const timesIcon = document.createElement('i');
         timesIcon.classList.add('times', 'icon');
 
         cancelBtn.append(timesIcon);
 
-        return cancelBtn
-      };
+        return cancelBtn;
+      }
+
+      const cancelBtn = getCancelBtn();
 
       function getConfirmBtn() {
         const confirmBtn = document.createElement('div');
-        confirmBtn.classList.add('ui', 'positive', 'right', 'labeled',
-                                 'icon', 'button');
+        confirmBtn.classList.add('ui', 'positive', 'right', 'labeled', 'icon', 'button');
 
         confirmBtn.textContent = 'Confirm';
 
@@ -244,11 +234,22 @@ const Generator = (function() {
 
         confirmBtn.append(checkIcon);
 
-        return confirmBtn
-      };
+        return confirmBtn;
+      }
 
+      const confirmBtn = getConfirmBtn();
+
+      modalActions.append(cancelBtn, confirmBtn);
+
+      return modalActions;
     }
 
+    const modalActions = getModalActions();
+    modal.actions = modalActions;
+
+    modal.append(modalHeader, modalContent, modalActions);
+
+    return modal;
   }
 
   function createForm() {
@@ -256,31 +257,6 @@ const Generator = (function() {
     form.classList.add('ui', 'form');
 
     const titleSegment = createSegment();
-    const titleField = getTitleField();
-    titleSegment.append(titleField);
-
-    const descSegment = createSegment();
-    const descField = getDescField();
-    descSegment.append(descField);
-
-    const prioritySegment = createSegment();
-    const priorityField = getPriorityField();
-    prioritySegment.append(priorityField);
-
-    const datesSegment = createSegment();
-    const datesField = getDateFields();
-    datesSegment.append(datesField);
-
-    const errorMessage = getErrorMessage();
-
-    form.append(titleSegment, prioritySegment, descSegment, datesSegment, errorMessage);
-
-    form.addResetBtn = addResetBtn;
-
-    formValidation.call(form);
-    form.valid = false;
-
-    return form
 
     function getTitleField() {
       const field = document.createElement('div');
@@ -295,8 +271,13 @@ const Generator = (function() {
 
       field.append(label, input);
 
-      return field
-    };
+      return field;
+    }
+
+    const titleField = getTitleField();
+    titleSegment.append(titleField);
+
+    const descSegment = createSegment();
 
     function getDescField() {
       const field = document.createElement('div');
@@ -311,21 +292,17 @@ const Generator = (function() {
 
       field.append(label, textArea);
 
-      return field
-    };
+      return field;
+    }
+
+    const descField = getDescField();
+    descSegment.append(descField);
+
+    const prioritySegment = createSegment();
 
     function getPriorityField() {
       const field = document.createElement('div');
       field.classList.add('field');
-
-      const label = document.createElement('label');
-      label.textContent = 'Priority';
-
-      const priorityDropdown = getPriorityDropdown();
-
-      field.append(label, priorityDropdown);
-
-      return field
 
       function getPriorityDropdown() {
         const dropdown = document.createElement('select');
@@ -333,23 +310,15 @@ const Generator = (function() {
         dropdown.name = 'priority';
         dropdown.id = 'new-form-priority-dropdown';
 
-        const dropdownOptions = getDropdownOptions();
-
-        for (const option of dropdownOptions) {
-          dropdown.append(option);
-        }
-
-        return dropdown
-
         function getDropdownOptions() {
           const label = document.createElement('option');
-          label.value = "";
+          label.value = '';
           label.textContent = 'Priority';
 
           const low = document.createElement('option');
           low.textContent = 'Low';
           low.value = '3';
-          
+
           const normal = document.createElement('option');
           normal.textContent = 'Normal';
           normal.value = '2';
@@ -358,57 +327,36 @@ const Generator = (function() {
           high.textContent = 'High';
           high.value = '1';
 
-          return [label, high, normal, low]
-        };
+          return [label, high, normal, low];
+        }
 
-      };
+        const dropdownOptions = getDropdownOptions();
 
-    };
+        dropdownOptions.forEach((option) => {
+          dropdown.append(option);
+        });
+
+        return dropdown;
+      }
+      const priorityDropdown = getPriorityDropdown();
+
+      const label = document.createElement('label');
+      label.textContent = 'Priority';
+
+      field.append(label, priorityDropdown);
+
+      return field;
+    }
+
+    const priorityField = getPriorityField();
+    prioritySegment.append(priorityField);
+
+    const datesSegment = createSegment();
 
     function getDateFields() {
-      const fields = document.createElement('div');
-      fields.classList.add('two', 'fields');
-
-      const dateStartedField = getDateStartedFields();
-      const dueDateField = getDueDateFields()
-
-      fields.append(dateStartedField, dueDateField);
-
-      return fields;
-
       function getDateStartedFields() {
         const fields = document.createElement('div');
         fields.classList.add('grouped', 'fields', 'field');
-
-        const dateField = getDateStartedField();
-        const toggleField = getDateStartedToggle();
-
-        fields.append(dateField, toggleField);
-
-        return fields
-
-        function getDateStartedToggle() {
-          const toggleField = document.createElement('div')
-          toggleField.classList.add('inline', 'field');
-
-          const toggle = document.createElement('div');
-          toggle.classList.add('ui', 'toggle', 'checkbox');
-          
-          const input = document.createElement('input');
-          input.id = 'new-form-dateStartedToggle';
-          input.type = 'checkbox';
-          input.tabIndex = '0';
-          input.checked = true
-
-          const label = document.createElement('label');
-          label.textContent = 'Did you begin today?'
-
-          toggle.append(input, label);
-
-          toggleField.append(toggle);
-
-          return toggleField
-        }
 
         function getDateStartedField() {
           const field = document.createElement('div');
@@ -417,12 +365,6 @@ const Generator = (function() {
 
           const label = document.createElement('label');
           label.textContent = 'Date Started';
-
-          const calendar = getDateStartedCalendar();
-
-          field.append(label, calendar);
-
-          return field
 
           function getDateStartedCalendar() {
             const calendar = document.createElement('div');
@@ -443,45 +385,50 @@ const Generator = (function() {
 
             calendar.append(inputDiv);
 
-            return calendar
-          };
+            return calendar;
+          }
 
-        };
+          const calendar = getDateStartedCalendar();
 
-      };
+          field.append(label, calendar);
 
-      function getDueDateFields() {
-        const fields = document.createElement('div');
-        fields.classList.add('grouped', 'fields', 'field');
+          return field;
+        }
 
-        const dateField = getDueDateField();
-        const toggleField = getDueDateToggle();
+        const dateField = getDateStartedField();
 
-        fields.append(dateField, toggleField);
-
-        return fields
-
-        function getDueDateToggle() {
-          const toggleField = document.createElement('div')
+        function getDateStartedToggle() {
+          const toggleField = document.createElement('div');
           toggleField.classList.add('inline', 'field');
 
           const toggle = document.createElement('div');
           toggle.classList.add('ui', 'toggle', 'checkbox');
 
           const input = document.createElement('input');
-          input.id = 'new-form-dueDateToggle';
+          input.id = 'new-form-dateStartedToggle';
           input.type = 'checkbox';
           input.tabIndex = '0';
+          input.checked = true;
 
           const label = document.createElement('label');
-          label.textContent = 'Is there a due date?'
+          label.textContent = 'Did you begin today?';
 
           toggle.append(input, label);
 
           toggleField.append(toggle);
 
-          return toggleField
+          return toggleField;
         }
+        const toggleField = getDateStartedToggle();
+
+        fields.append(dateField, toggleField);
+
+        return fields;
+      }
+
+      function getDueDateFields() {
+        const fields = document.createElement('div');
+        fields.classList.add('grouped', 'fields', 'field');
 
         function getDueDateField() {
           const field = document.createElement('div');
@@ -490,12 +437,6 @@ const Generator = (function() {
 
           const label = document.createElement('label');
           label.textContent = 'Due Date';
-
-          const calendar = getDueDateCalendar();
-
-          field.append(label, calendar);
-
-          return field
 
           function getDueDateCalendar() {
             const calendar = document.createElement('div');
@@ -516,36 +457,86 @@ const Generator = (function() {
 
             calendar.append(inputDiv);
 
-            return calendar
-          };
+            return calendar;
+          }
 
-        };
+          const calendar = getDueDateCalendar();
 
-      };
+          field.append(label, calendar);
 
-    };
+          return field;
+        }
+
+        const dateField = getDueDateField();
+
+        function getDueDateToggle() {
+          const toggleField = document.createElement('div');
+          toggleField.classList.add('inline', 'field');
+
+          const toggle = document.createElement('div');
+          toggle.classList.add('ui', 'toggle', 'checkbox');
+
+          const input = document.createElement('input');
+          input.id = 'new-form-dueDateToggle';
+          input.type = 'checkbox';
+          input.tabIndex = '0';
+
+          const label = document.createElement('label');
+          label.textContent = 'Is there a due date?';
+
+          toggle.append(input, label);
+
+          toggleField.append(toggle);
+
+          return toggleField;
+        }
+        const toggleField = getDueDateToggle();
+
+        fields.append(dateField, toggleField);
+
+        return fields;
+      }
+
+      const fields = document.createElement('div');
+      const dateStartedField = getDateStartedFields();
+      const dueDateField = getDueDateFields();
+
+      fields.classList.add('two', 'fields');
+      fields.append(dateStartedField, dueDateField);
+
+      return fields;
+    }
+
+    const datesField = getDateFields();
+    datesSegment.append(datesField);
 
     function getErrorMessage() {
       const field = document.createElement('div');
       field.classList.add('ui', 'error', 'message');
 
-      return field
+      return field;
     }
+
+    const errorMessage = getErrorMessage();
+
+    form.append(titleSegment, prioritySegment, descSegment, datesSegment, errorMessage);
 
     function addResetBtn() {
       const resetBtn = document.createElement('div');
       resetBtn.classList.add('ui', 'left', 'floated', 'right', 'labeled', 'icon', 'button');
       resetBtn.textContent = 'Reset';
 
-      resetBtn.onclick = () => { this.reset() };
-      
+      resetBtn.onclick = () => { this.reset(); };
+
       const icon = document.createElement('i');
       icon.classList.add('undo', 'icon');
 
       resetBtn.append(icon);
 
       this.parentElement.parentElement.actions.append(resetBtn);
-    };
+    }
+
+    form.addResetBtn = addResetBtn;
 
     function formValidation() {
       // let formObj;
@@ -577,26 +568,22 @@ const Generator = (function() {
         .form({
           fields: {
             title: ['minLength[4]', 'empty'],
-            description: ['minLength[8]', 'empty']
+            description: ['minLength[8]', 'empty'],
           },
-          onSuccess: function (event, fields) {
+          onSuccess: () => {
             this.valid = true;
           },
-          onFailure: function (formErrors, fields) {
+          onFailure: () => {
             this.valid = false;
-          }
-        })
-        ;
+          },
+        });
     }
 
-  };
+    formValidation.call(form);
+    form.valid = false;
 
-  function createSegment() {
-    const segment = document.createElement('div');
-    segment.classList.add('ui', 'grey', 'inverted', 'segment');
-
-    return segment
-  };
+    return form;
+  }
 
   function createProjectPage() {
     const page = document.createElement('div');
@@ -604,44 +591,17 @@ const Generator = (function() {
     page.id = 'project-page-container';
     page.style.maxWidth = '750px';
 
-    const segment = getProjectPageSegment();
-    page.segment = segment;
-
-    page.append(segment);
-
-    return page
-
     function getProjectPageSegment() {
       const segment = createSegment();
       segment.classList.remove('grey');
       segment.classList.add('vertically', 'divided', 'grid');
 
-      const segHeader = getProjectHeader();
-      segment.heading = segHeader.heading;
-
-      const segDetails = getProjectDetails();
-      const segDescription = getProjectDesc();
-      const segTasks = getProjectTasks();
-
-      segment.append(segHeader, segDetails, segDescription, segTasks);
-
-      return segment
-
       function getProjectHeader() {
         const header = document.createElement('div');
         header.classList.add('ui', 'row');
 
-        const titleColumn = getHeaderTitleColumn();
-        header.heading = titleColumn.heading;
-
-        const btnsColumn = getHeaderBtnColumn();
-        
-        header.append(titleColumn, btnsColumn);
-
-        return header
-        
         function getHeaderTitleColumn() {
-          const column = document.createElement('div') ;
+          const column = document.createElement('div');
           column.classList.add('eight', 'wide', 'column');
 
           const heading = document.createElement('h2');
@@ -652,50 +612,48 @@ const Generator = (function() {
 
           column.append(heading);
 
-          return column
+          return column;
         }
+
+        const titleColumn = getHeaderTitleColumn();
+        header.heading = titleColumn.heading;
 
         function getHeaderBtnColumn() {
           const btnsColumn = document.createElement('div');
           btnsColumn.classList.add('eight', 'wide', 'column');
           btnsColumn.id = 'project-page-header-btns-column';
-  
-          const headerBtns = createHeaderBtns();
-          for (const btn of headerBtns.children) {
-            btn.classList.remove('mini');
-          }
 
+          const headerBtns = createHeaderBtns();
+          headerBtns.children.forEach((btnElem) => {
+            const btn = btnElem;
+            btn.classList.remove('mini');
+          });
 
           page.buttons = headerBtns;
-  
+
           btnsColumn.append(headerBtns);
 
-          return btnsColumn
-        };
+          return btnsColumn;
+        }
 
-      };
+        const btnsColumn = getHeaderBtnColumn();
+
+        header.append(titleColumn, btnsColumn);
+
+        return header;
+      }
+
+      const segHeader = getProjectHeader();
+      segment.heading = segHeader.heading;
 
       function getProjectDetails() {
         const details = document.createElement('div');
         details.classList.add('ui', 'two', 'column', 'row');
         details.id = 'project-page-details-row';
 
-        const priority = getPriorityColumn();
-        const dates = getDatesColumn();
-
-        details.append(priority, dates);
-
-        return details
-
         function getPriorityColumn() {
           const column = document.createElement('div');
           column.classList.add('compact', 'left', 'floated', 'column');
-
-          const prioritySegment = getPrioritySegment();
-
-          column.append(prioritySegment);
-
-          return column
 
           function getPrioritySegment() {
             const prioritySegment = createSegment();
@@ -710,15 +668,23 @@ const Generator = (function() {
 
             const priority = document.createElement('span');
 
-            segment.priority = priority;            
+            segment.priority = priority;
 
             internalSegment.append(text, priority);
 
             prioritySegment.append(internalSegment);
 
-            return prioritySegment
-          };
-        };
+            return prioritySegment;
+          }
+
+          const prioritySegment = getPrioritySegment();
+
+          column.append(prioritySegment);
+
+          return column;
+        }
+
+        const priority = getPriorityColumn();
 
         function getDatesColumn() {
           const column = document.createElement('div');
@@ -732,14 +698,21 @@ const Generator = (function() {
 
           column.append(datesSegment);
 
-          return column
-        };
+          return column;
+        }
 
-      };
+        const dates = getDatesColumn();
+
+        details.append(priority, dates);
+
+        return details;
+      }
+
+      const segDetails = getProjectDetails();
 
       function getProjectDesc() {
         const desc = document.createElement('div');
-        desc.classList.add('ui', 'centered',  'row');
+        desc.classList.add('ui', 'centered', 'row');
 
         const column = document.createElement('div');
         column.classList.add('column');
@@ -762,8 +735,9 @@ const Generator = (function() {
 
         desc.append(column);
 
-        return desc
-      };
+        return desc;
+      }
+      const segDescription = getProjectDesc();
 
       function getProjectTasks() {
         const tasks = document.createElement('div');
@@ -781,55 +755,42 @@ const Generator = (function() {
 
         tasks.append(column);
 
-        return tasks
-      };
+        return tasks;
+      }
+      const segTasks = getProjectTasks();
 
-    };
+      segment.append(segHeader, segDetails, segDescription, segTasks);
 
-  };
+      return segment;
+    }
+
+    const segment = getProjectPageSegment();
+    page.segment = segment;
+
+    page.append(segment);
+
+    return page;
+  }
 
   function createTaskCard() {
-    const card = createProjectCard()
+    const card = createProjectCard();
 
     return card;
-  };
+  }
 
   function createTable() {
     const table = document.createElement('table');
     table.classList.add('ui', 'selectable', 'inverted', 'table');
     table.id = 'history-table';
 
-    const tableHeader = getTableHeader();
-    table.header = tableHeader;
-
-    const tableBody = getTableBody();
-    table.body = tableBody;
-
-    const tableFooter = getTableFooter();
-    table.footer = tableFooter;
-
-    table.append(tableHeader, tableBody, tableFooter);
-
-    return table
-
     function getTableHeader() {
       const header = document.createElement('thead');
       const row = document.createElement('tr');
 
-      const columnHeaders = getColumnHeaders();
-
-      for (const th of columnHeaders) {
-        row.append(th);
-      };
-
-      header.append(row);
-
-      return header
-
       function getColumnHeaders() {
         const titleHead = document.createElement('th');
         titleHead.classList.add('center', 'aligned');
-        titleHead.textContent = "Title";
+        titleHead.textContent = 'Title';
 
         const priorityHead = document.createElement('th');
         priorityHead.textContent = 'Priority';
@@ -839,23 +800,39 @@ const Generator = (function() {
         descHead.textContent = 'Description';
 
         const startedHead = document.createElement('th');
-        startedHead.classList.add('right', 'aligned')
+        startedHead.classList.add('right', 'aligned');
         startedHead.textContent = 'Began on';
 
         const dueHead = document.createElement('th');
-        dueHead.classList.add('right', 'aligned')
+        dueHead.classList.add('right', 'aligned');
         dueHead.textContent = 'Due on';
 
-        return [titleHead, priorityHead, descHead, startedHead, dueHead]
-      };
-    };
+        return [titleHead, priorityHead, descHead, startedHead, dueHead];
+      }
+
+      const columnHeaders = getColumnHeaders();
+
+      columnHeaders.forEach((elem) => {
+        row.append(elem);
+      });
+
+      header.append(row);
+
+      return header;
+    }
+
+    const tableHeader = getTableHeader();
+    table.header = tableHeader;
 
     function getTableBody() {
       const tableBody = document.createElement('tbody');
       tableBody.id = 'history-table-body';
 
       return tableBody;
-    };
+    }
+
+    const tableBody = getTableBody();
+    table.body = tableBody;
 
     function getTableFooter() {
       const tableFooter = document.createElement('tfoot');
@@ -869,10 +846,16 @@ const Generator = (function() {
 
       tableFooter.append(row);
 
-      return tableFooter
-    };
+      return tableFooter;
+    }
 
-  };
+    const tableFooter = getTableFooter();
+    table.footer = tableFooter;
+
+    table.append(tableHeader, tableBody, tableFooter);
+
+    return table;
+  }
 
   return {
     createProjectCard,
@@ -882,8 +865,7 @@ const Generator = (function() {
     createTable,
     createModal,
     createForm,
-  }
+  };
+})());
 
-})();
-
-export { Generator }
+export default Generator;
