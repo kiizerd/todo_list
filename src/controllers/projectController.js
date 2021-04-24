@@ -1,61 +1,54 @@
-import { EventAggregator, Token } from '../events';
+import { EventAggregator, Token } from '../events/events';
 
-const ProjectController = (function() {
-
+const ProjectController = ((function iife() {
   let primedProject;
+
   const requestToken = new Token('requestProjects', 'projectController');
-  EventAggregator.subscribe('primeProject', projectName => {   
+
+  EventAggregator.subscribe('primeProject', (projectName) => {
     primedProject = projectName;
     const reqOptions = {
       filter: {
-        byName: primedProject
+        byName: primedProject,
       },
-      _token: requestToken
+      token: requestToken,
     };
 
     EventAggregator.publish('requestProjects', reqOptions);
   });
 
-  
-  
-  EventAggregator.subscribe('projectsReceipt', projects => {
-    if (projects._token && (projects._token._id === requestToken._id)) {
-      primedProject = projects[0];
-      console.log('Primed project --> ', primedProject);
-    } else { return false }
-    
-    EventAggregator.subscribe('requestPrimedProject', reqObj => {
-      let resObj = primedProject;
-      if (reqObj._token) resObj._token = reqObj._token;
-      EventAggregator.publish('primedProjectReceipt', primedProject);
-
-      delete resObj._token;
-    });
+  EventAggregator.subscribe('projectsReceipt', (projects) => {
+    if (projects.token && (projects.token.id === requestToken.id)) {
+      [primedProject] = projects;
+    } else { return false; }
+    return null;
   });
 
-  
-  EventAggregator.subscribe('createProject', formData => {
+  EventAggregator.subscribe('requestPrimedProject', (reqObj) => {
+    const resObj = primedProject;
+    if (reqObj.token) resObj.token = reqObj.token;
+    EventAggregator.publish('primedProjectReceipt', resObj);
+  });
+
+  EventAggregator.subscribe('createProject', (formData) => {
     EventAggregator.publish('formToProject', formData);
   });
 
-
   const taskToken = new Token('formToTask', 'projectController');
 
-  EventAggregator.subscribe('createTask', formData => {
-    formData._token = taskToken;
-    EventAggregator.publish('formToTask', formData);
-  });
-  
-
-  EventAggregator.subscribe('taskCreated', taskObj => {
-    if (taskObj._token && (taskObj._token._id === taskToken._id)) {
-      primedProject.addTask(taskObj);
-
-      delete taskObj._token
-    };
+  EventAggregator.subscribe('createTask', (formData) => {
+    const tokenizedFormData = formData;
+    tokenizedFormData.token = taskToken;
+    EventAggregator.publish('formToTask', tokenizedFormData);
   });
 
+  EventAggregator.subscribe('taskCreated', (taskObj) => {
+    const task = taskObj;
+    if (task.token && (task.token.id === taskToken.id)) {
+      delete task.token;
+      primedProject.addTask(task);
+    }
+  });
+})());
 
-})()
-
-export { ProjectController }
+export default ProjectController;

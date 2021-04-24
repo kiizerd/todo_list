@@ -1,15 +1,11 @@
-import { ProjectController } from './projectController'
+import ProjectController from './projectController';
 
-const Controller = (function() {
-  
+const Controller = ((function iife() {
   const projectController = ProjectController;
-  const taskController = '';
 
   return {
     project: projectController,
-    task: taskController
-  }
+  };
+})());
 
-})();
-
-export { Controller }
+export default Controller;
