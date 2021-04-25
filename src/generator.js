@@ -624,7 +624,7 @@ const Generator = ((function iife() {
           btnsColumn.id = 'project-page-header-btns-column';
 
           const headerBtns = createHeaderBtns();
-          headerBtns.children.forEach((btnElem) => {
+          Array.from(headerBtns.children).forEach((btnElem) => {
             const btn = btnElem;
             btn.classList.remove('mini');
           });

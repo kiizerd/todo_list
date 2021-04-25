@@ -9,7 +9,8 @@ const Database = ((function iife() {
   };
 
   function checkForStorage() {
-    return (window.localStorage.getItem('StorageObject') != null);
+    const storage = window.localStorage.getItem('StorageObject');
+    return storage || null;
   }
 
   function getStoredProjects() {
@@ -47,21 +48,21 @@ const Database = ((function iife() {
       getCompletedTasks(),
     ];
 
-    Object.entries(storage).forEach((stored) => {
+    storage.forEach((stored) => {
       if (stored) {
-        stored.forEach((object) => {
+        Object.values(stored).forEach((object) => {
           if (stored === storage[0]) {
-            if (stored[object].tasks && stored[object].tasks.length) {
+            if (object.tasks && object.tasks.length) {
               EventAggregator.publish('storedTasksToTasks', [
-                stored[object].tasks,
-                stored[object].title,
+                object.tasks,
+                object.title,
               ]);
             }
-            EventAggregator.publish('storedProjectToProject', stored[object]);
+            EventAggregator.publish('storedProjectToProject', object);
           } else if (stored === storage[1]) {
-            completed.projects[stored[object].title] = stored[object];
+            completed.projects[object.title] = object;
           } else if (stored === storage[2]) {
-            completed.tasks[stored[object].title] = stored[object];
+            completed.tasks[object.title] = object;
           }
         });
       }
