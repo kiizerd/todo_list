@@ -292,7 +292,7 @@ const Display = ((function iife() {
         if (!projectCards.length) {
           $(div).append(
             $('<img></img>').attr({
-              src: '../../media/storage_empty.png',
+              src: 'https://raw.githubusercontent.com/kiizerd/todo_list/main/media/storage_empty.png',
               type: 'png',
             })
               .css({ margin: '2rem auto 2rem auto' }),
