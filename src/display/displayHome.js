@@ -314,6 +314,7 @@ const Display = (function iife() {
             $("<img></img>")
               .attr({
                 src: "../media/storage_empty.png",
+                alt: "No projects found",
                 type: "png",
               })
               .css({ margin: "2rem auto 2rem auto" })
