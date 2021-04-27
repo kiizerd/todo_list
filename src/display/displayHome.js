@@ -313,8 +313,7 @@ const Display = (function iife() {
           $(div).append(
             $("<img></img>")
               .attr({
-                src:
-                  "https://raw.githubusercontent.com/kiizerd/todo_list/main/media/storage_empty.png",
+                src: "../media/storage_empty.png",
                 type: "png",
               })
               .css({ margin: "2rem auto 2rem auto" })
